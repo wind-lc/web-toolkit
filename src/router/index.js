@@ -1,14 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import layout from '../views/layout/index.vue'
 
 Vue.use(VueRouter)
+// 生产环境使用懒加载
+const _import = require('./import-' + process.env.NODE_ENV)
 
 const routes = [
   {
     path: '/',
     name: 'layout',
-    component: layout
+    component: _import('layout/index')
   }
 
 ]
