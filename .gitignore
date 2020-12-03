@@ -4,6 +4,7 @@ node_modules
 /dist_app
 
 
+
 # local env files
 .env.local
 .env.*.local
@@ -22,6 +23,9 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+*.log
+*.lock
 
 #Electron-builder output
 /dist_electron
+yarn.lock

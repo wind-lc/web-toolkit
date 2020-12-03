@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -9,21 +9,37 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
-
+let win = null
+// 主进程控制台输出
+function mainConsole (arg) {
+  win.webContents.send('main-console', arg)
+}
 async function createWindow () {
   // Create the browser window.
-  const win = new BrowserWindow({
-    frame: false, // 标题栏,菜单栏
+  win = new BrowserWindow({
+    frame: false, // 无边框窗口
+    // transparent: true, // 透明窗口
+    show: false,
     width: 800,
     height: 600,
     iocn: 'public/favicon.ico',
+    maximizable: true,
+    minimizable: true,
+    resizable: true,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+      nodeIntegration: true
     }
   })
-
+  // 渲染完成显示窗口
+  win.once('ready-to-show', () => {
+    win.show()
+  })
+  // 主动向渲染器发送信息
+  win.webContents.on('did-finish-load', () => {
+    mainConsole('渲染完成！')
+  })
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
@@ -79,3 +95,36 @@ if (isDevelopment) {
     })
   }
 }
+// 和渲染器进程通信
+// 控制台输出通信
+ipcMain.on('asynchronous-message', (event, arg) => {
+  event.reply('asynchronous-reply', '你好')
+})
+// 开启开发者工具
+ipcMain.on('show-dev-tools', (event, arg) => {
+  win.webContents.openDevTools()
+  event.reply('show-dev-tools-console', '已经打开')
+})
+// 窗口控制
+ipcMain.on('control-window', (event, arg) => {
+  switch (arg) {
+    case 'minimize':
+      win.minimize()
+      break
+    case 'maximize':
+      win.maximize()
+      break
+    case 'unmaximize':
+      win.unmaximize()
+      break
+    case 'close':
+      win.close()
+      break
+  }
+  // 判断窗口是否最大化
+  event.reply('control-window-return', win.isMaximized())
+})
+// 判断窗口是否最大化
+ipcMain.on('is-maximized', (event, arg) => {
+  event.reply('control-window-return', win.isMaximized())
+})

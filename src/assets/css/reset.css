@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 html,
 body,
 div,
@@ -132,6 +135,6 @@ section,
 summary {
   display: block;
 }
-* {
-  box-sizing: border-box;
+input{
+  outline: none;
 }
