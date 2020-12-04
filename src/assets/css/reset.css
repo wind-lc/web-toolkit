@@ -138,3 +138,11 @@ summary {
 input{
   outline: none;
 }
+a:link,
+a:visited,
+a:hover,
+a:active{
+  outline: none;
+  text-decoration: none;
+}
+
