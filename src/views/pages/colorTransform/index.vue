@@ -32,26 +32,42 @@
     </ul>
     <div class="color-transform-preview"
          :style="{'background-color':background}"></div>
-
+    <w-message :message="message"
+               :visible.sync="messageVisible"></w-message>
   </div>
 </template>
 <script>
 import IconSvg from '@/components/IconSvg'
+import wMessage from '@/components/wMessage'
 export default {
   name: 'colorTransform',
-  components: { IconSvg },
+  components: {
+    IconSvg,
+    wMessage
+  },
   data () {
     return {
+      // rgb值
       rgb: '',
+      // 十六进制值
       hex: '',
-      background: ''
+      // 预览颜色
+      background: '',
+      // 提示信息
+      message: {
+        type: '',
+        text: ''
+      },
+      // 提示信息可见
+      messageVisible: false
     }
   },
   methods: {
     // 转换为十六进制
     transformHex () {
+      const reg = /^(([0-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))),(([0-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5]))))(([0-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5])))),(([0-9]|([1-9]\d)|(1\d\d)|(2([0-4]\d|5[0-5]))))$/
       let arr = this.rgb.split(',')
-      if (arr.length === 3) {
+      if (reg.test(arr)) {
         arr = arr.map(el => {
           let s = Number(el).toString(16).toUpperCase()
           if (s.length === 1) {
@@ -64,7 +80,11 @@ export default {
         this.hex = hex
         this.background = hex
       } else {
-
+        this.message = {
+          type: 'error',
+          text: '请输入正确的RGB值'
+        }
+        this.messageVisible = true
       }
     },
     // 转换为RGB
@@ -79,7 +99,11 @@ export default {
         this.rgb = rgb.join()
         this.background = this.hex
       } else {
-
+        this.message = {
+          type: 'error',
+          text: '请输入正确的十六进制值'
+        }
+        this.messageVisible = true
       }
     }
   }

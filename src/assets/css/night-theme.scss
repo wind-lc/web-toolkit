@@ -36,6 +36,12 @@
   .toolkit-controls li:hover {
     color: #ffffff;
   }
+  // 提示信息框
+  .w-message-container{
+    background-color: #3c3c3c;
+    padding: 14px;
+    color: red;
+  }
   // 仪表盘导航
   .dashboard-nav li {
     background-color: #3c3c3c;
