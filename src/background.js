@@ -113,16 +113,18 @@ ipcMain.on('control-window', (event, arg) => {
       break
     case 'maximize':
       win.maximize()
+      // 判断窗口是否最大化
+      event.reply('control-window-return', win.isMaximized())
       break
     case 'unmaximize':
       win.unmaximize()
+      // 判断窗口是否最大化
+      event.reply('control-window-return', win.isMaximized())
       break
     case 'close':
       win.close()
       break
   }
-  // 判断窗口是否最大化
-  event.reply('control-window-return', win.isMaximized())
 })
 // 判断窗口是否最大化
 ipcMain.on('is-maximized', (event, arg) => {

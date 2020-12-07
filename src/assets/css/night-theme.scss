@@ -30,11 +30,20 @@
     border-radius: 10px;
   }
   // 标题栏
+  .toolkit-logo{
+    .icon-svg{
+      color: #007ACC;
+    }
+  }
   .toolkit-titlebar {
     background-color: #3c3c3c;
   }
   .toolkit-controls li:hover {
     color: #ffffff;
+    background-color: rgba(255,255,255,0.1);
+    &:last-of-type{
+      background-color: rgba(232,17,35,0.9);
+    }
   }
   // 提示信息框
   .w-message-container{

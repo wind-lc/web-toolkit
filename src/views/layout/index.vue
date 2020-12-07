@@ -12,8 +12,7 @@
       <!-- logo -->
       <div class="toolkit-logo">
         <router-link :to="{name: 'dashboard'}">
-          <img src="/favicon.ico"
-               alt="">
+          <icon-svg type="icon-logo"></icon-svg>
         </router-link>
         <h1>WebToolkit</h1>
       </div>
@@ -166,9 +165,8 @@ export default {
   > a {
     -webkit-app-region: no-drag;
   }
-  img {
-    width: 22px;
-    height: 22px;
+  .icon-svg {
+    font-size: 20px;
   }
   h1 {
     font-weight: normal;
@@ -180,7 +178,7 @@ export default {
   display: flex;
   -webkit-app-region: no-drag;
   li {
-    padding: 0 14px;
+    width: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
