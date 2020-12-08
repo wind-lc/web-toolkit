@@ -1,6 +1,5 @@
 <template>
-  <div id="app"
-       class="night-theme">
+  <div id="app">
     <router-view />
   </div>
 </template>

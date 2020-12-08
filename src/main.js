@@ -20,7 +20,7 @@ if (window.require) {
     console.log(arg) // prints "pong"
   })
   ipcRenderer.on('main-console', (event, arg) => {
-    console.log('%c' + arg, 'color: #007ACC;font-size: 20px;font-weight: bold;')
+    console.log('%c' + arg, 'color: #24a9f4;font-size: 20px;font-weight: bold;')
   })
   ipcRenderer.send('asynchronous-message', 'ping')
   // 文件

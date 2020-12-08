@@ -6,26 +6,53 @@
 */
 -->
 <template>
-  <div class="toolkit-layout">
+  <div class="toolkit-layout"
+       :class="skinName">
     <!-- 标题栏 -->
     <div class="toolkit-titlebar">
       <!-- logo -->
       <div class="toolkit-logo">
         <router-link :to="{name: 'dashboard'}">
           <icon-svg type="icon-logo"></icon-svg>
+          <h1>WebToolkit</h1>
         </router-link>
-        <h1>WebToolkit</h1>
       </div>
       <!-- logo -->
       <!-- 控制按钮 -->
       <ul class="toolkit-controls">
         <!-- 菜单 -->
-        <li v-for="({name,icon,value,show}) in menubar"
-            :key="value"
-            :title="name"
-            @click="controlToolkit(value)"
-            v-show="show">
-          <icon-svg :type="icon"></icon-svg>
+        <li title="帮助"
+            @click="helpVisible = !helpVisible"
+            v-clickoutside="handleHelpVisible"
+            :class="{'toolkit-controls-list-active':helpVisible}">
+          <icon-svg type="icon-help"></icon-svg>
+          <ul v-show="helpVisible"
+              class="toolkit-controls-help-list toolkit-controls-select">
+            <li v-for="({name,value,click}) in help"
+                :key="value"
+                @click="menubarClick(click)"
+                title="">{{name}}</li>
+          </ul>
+        </li>
+        <li title="皮肤"
+            @click="skinVisible = !skinVisible"
+            v-clickoutside="handleSkinVisible">
+          <icon-svg type="icon-skin"></icon-svg>
+          <ul v-show="skinVisible"
+              class="toolkit-controls-skin-list toolkit-controls-select">
+            <li v-for="({name,value,color}) in skin"
+                :key="value"
+                :style="{'background-color': color}"
+                title=""
+                @click="skinName = value">
+              <icon-svg type="icon-logo"></icon-svg>
+              <span>{{name}}</span>
+            </li>
+          </ul>
+        </li>
+        <li title="设置">
+          <icon-svg type="icon-setting"></icon-svg>
+
         </li>
         <!-- 菜单 -->
         <!-- 窗口控制 -->
@@ -57,19 +84,41 @@ export default {
   },
   data () {
     return {
-      // 菜单按钮
-      menubar: [
+      // 皮肤类名
+      skinName: 'night-theme',
+      // 帮助菜单可见
+      helpVisible: false,
+      // 帮助菜单
+      help: [
         {
-          name: '帮助',
-          icon: 'icon-help',
-          value: 'help',
-          show: true
+          name: '切换开发人员工具',
+          value: 'devTools',
+          click: 'showDevTools'
         },
         {
-          name: '设置',
-          icon: 'icon-setting',
-          value: 'setting',
-          show: true
+          name: '帮助文档',
+          value: 'document',
+          click: null
+        }
+      ],
+      // 皮肤菜单可见
+      skinVisible: false,
+      // 皮肤菜单
+      skin: [
+        {
+          name: '夜幕黑',
+          color: '#3c3c3c',
+          value: 'night-theme'
+        },
+        {
+          name: '拂晓蓝',
+          color: '#1890ff',
+          value: 'dawn-theme'
+        },
+        {
+          name: '薄暮红',
+          color: '#f5222d',
+          value: 'dusk-theme'
         }
       ],
       // 窗口控制按钮
@@ -102,24 +151,41 @@ export default {
       ]
     }
   },
-  mounted () {
+  directives: {
+    clickoutside: {
+      bind (el, binding, vnode) {
+        function documentHandler (e) {
+          if (el.contains(e.target)) {
+            return false
+          }
+          if (typeof binding.value === 'function') {
+            binding.value(e)
+          } else {
+            console.error('您传入的值并不是一个函数：' + binding.value)
+          }
+        }
+        el.__vueClickOutSize__ = documentHandler
+        document.addEventListener('click', documentHandler)
+      },
+      unbind (el, binding) {
+        document.removeEventListener('click', el.__vueClickOutSize__)
+        delete el.__vueClickOutSize__
+      }
+    }
+  },
+  created () {
     this.isMaximized()
+    this.ipcListener()
   },
   methods: {
-    // 显示控制台
-    showDevTools () {
-      this.$ipcRenderer.send('show-dev-tools', true)
+
+    // 主进程响应监听
+    ipcListener () {
+      // 控制台
       this.$ipcRenderer.on('show-dev-tools-console', (event, arg) => {
         console.log(arg)
       })
-    },
-    // 窗口控制
-    controlWindow (value) {
-      this.$ipcRenderer.send('control-window', value)
-    },
-    // 返回窗口是否全屏
-    isMaximized () {
-      this.$ipcRenderer.send('is-maximized', '')
+      // 返回窗口是否全屏
       this.$ipcRenderer.on('control-window-return', (event, arg) => {
         if (arg) {
           this.windowControlsList[1].show = false
@@ -129,6 +195,32 @@ export default {
           this.windowControlsList[2].show = false
         }
       })
+    },
+    // 隐藏帮助
+    handleHelpVisible () {
+      this.helpVisible = false
+    },
+    // 隐藏皮肤
+    handleSkinVisible () {
+      this.skinVisible = false
+    },
+    // 显示控制台
+    showDevTools () {
+      this.$ipcRenderer.send('show-dev-tools', true)
+    },
+    // 菜单按钮点击事件
+    menubarClick (fun) {
+      if (fun) {
+        this[fun]()
+      }
+    },
+    // 窗口控制
+    controlWindow (value) {
+      this.$ipcRenderer.send('control-window', value)
+    },
+    // 返回窗口是否全屏
+    isMaximized () {
+      this.$ipcRenderer.send('is-maximized', '')
     },
     // 应用控制
     controlToolkit (value) {
@@ -146,6 +238,7 @@ export default {
   -webkit-app-region: drag;
   display: flex;
   position: relative;
+  user-select: none;
   &::before {
     content: '';
     display: block;
@@ -159,14 +252,15 @@ export default {
   }
 }
 .toolkit-logo {
-  display: flex;
   padding: 0 12px;
-  align-items: center;
   > a {
+    display: flex;
+    height: 100%;
+    align-items: center;
     -webkit-app-region: no-drag;
   }
   .icon-svg {
-    font-size: 20px;
+    font-size: 24px;
   }
   h1 {
     font-weight: normal;
@@ -177,12 +271,66 @@ export default {
   margin-left: auto;
   display: flex;
   -webkit-app-region: no-drag;
-  li {
+  & > li {
     width: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    position: relative;
+    transition: all 0.5s ease;
+  }
+}
+.toolkit-controls-select {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  z-index: 1;
+  width: 200px;
+}
+.toolkit-controls-help-list {
+  & > li {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 14px;
+  }
+}
+.toolkit-controls-skin-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+  width: 230px;
+  & > li {
+    width: 50px;
+    height: 50px;
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 5px;
+    position: relative;
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      transition: all 0.5s ease;
+    }
+    .icon-svg {
+      font-size: 24px;
+    }
+    span {
+      position: absolute;
+      text-align: center;
+      font-size: 9px;
+      width: 100%;
+      bottom: 5px;
+      left: 0;
+    }
   }
 }
 .toolkit-main {

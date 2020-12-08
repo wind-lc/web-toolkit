@@ -1,17 +1,16 @@
 .night-theme{
   // 全局继承样式
-  color:#cccccc;
-  // background-color: #252526;
+  color:#333333;
   background-color: #1e1e1e;
   input{
-    color:#cccccc;
+    color:#333333;
   }
   // a标签
   a:link,
   a:visited,
   a:hover,
   a:active{
-    color:#cccccc;
+    color:#333333;
   }
   // 滚动条
   ::-webkit-scrollbar {
@@ -32,11 +31,11 @@
   // 标题栏
   .toolkit-logo{
     .icon-svg{
-      color: #1890ff;
+      color: #ffffff;
     }
   }
   .toolkit-titlebar {
-    background-color: #3c3c3c;
+    background-color: #1890ff;
   }
   .toolkit-controls >li:hover {
     &>.icon-svg{
