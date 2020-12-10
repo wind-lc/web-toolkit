@@ -7,7 +7,7 @@
 -->
 <template>
   <div class="toolkit-layout"
-       :class="skinName">
+       :class="getUi.skin">
     <!-- 标题栏 -->
     <div class="toolkit-titlebar">
       <!-- logo -->
@@ -44,7 +44,7 @@
                 :key="value"
                 :style="{'background-color': color}"
                 title=""
-                @click="skinName = value">
+                @click="handleSkin(value)">
               <icon-svg type="icon-logo"></icon-svg>
               <span>{{name}}</span>
             </li>
@@ -77,6 +77,7 @@
 </template>
 <script>
 import IconSvg from '@/components/IconSvg'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'layout',
   components: {
@@ -84,8 +85,6 @@ export default {
   },
   data () {
     return {
-      // 皮肤类名
-      skinName: 'night-theme',
       // 帮助菜单可见
       helpVisible: false,
       // 帮助菜单
@@ -173,12 +172,15 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['getUi'])
+  },
   created () {
     this.isMaximized()
     this.ipcListener()
   },
   methods: {
-
+    ...mapActions(['saveSkin']),
     // 主进程响应监听
     ipcListener () {
       // 控制台
@@ -203,6 +205,10 @@ export default {
     // 隐藏皮肤
     handleSkinVisible () {
       this.skinVisible = false
+    },
+    // 皮肤选择
+    handleSkin (value) {
+      this.saveSkin(value)
     },
     // 显示控制台
     showDevTools () {

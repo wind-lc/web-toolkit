@@ -1,0 +1,113 @@
+// 颜色定义
+$color-1:#333333;
+$color-2:#efefef;
+$color-3:#ffffff;
+$color-4:#f5222d;
+$color-5:#c9000a;
+$color-6:#1890ff;
+$color-7:#f8656c;
+// 透明色
+ $rgba-1: rgba(255,255,255,0.3);
+ $rgba-2: rgba(232,17,35,0.9);
+ $rgba-3:rgba(0,0,0,0.3);
+
+.dusk-theme{
+  // 全局继承样式
+  color:$color-1;
+  background-color: $color-3;
+  input{
+    color:$color-1;
+  }
+  // a标签
+  a:link,
+  a:visited,
+  a:hover,
+  a:active{
+    color:$color-1;
+  }
+  // 标题栏
+  .toolkit-logo{
+    .icon-svg{
+      color: $color-3;
+    }
+    h1{
+      color: $color-3;
+    }
+  }
+  .toolkit-titlebar {
+    background-color: $color-4;
+    color: $color-2;
+    box-shadow: 0 0 15px 0  $rgba-3;
+  }
+  .toolkit-controls >li:hover {
+    &>.icon-svg{
+      color: $color-3;
+    }
+    background-color: $rgba-1;
+    &:last-of-type{
+      background-color: $rgba-2;
+    }
+  }
+  .toolkit-controls-list-active{
+    background-color: $rgba-1;
+    &>.icon-svg{
+      color: $color-3;
+    }
+  }
+  .toolkit-controls-select{
+    background-color: $color-4;
+    box-shadow: 0 3px 3px 0 $rgba-3;
+  }
+  .toolkit-controls-help-list >li:hover{
+    color: $color-3;
+    background-color: $color-7;
+  }
+  .toolkit-controls-skin-list >li{
+    &:first-of-type{
+      .icon-svg{
+        color: $color-6;
+      }
+    }
+    &::before{
+      border: 1px solid $rgba-1;
+    }
+    &:hover::before{
+      border: 1px solid $color-3;
+    }
+  }
+  // 提示信息框
+  .w-message-container{
+    background-color: $color-4;
+    padding: 14px;
+    color: $color-3;
+  }
+  // 仪表盘导航
+  .dashboard-nav li {
+    background-color: $color-4;
+    color: $color-2;
+    &:hover{
+      background-color: $color-5;
+      box-shadow: 0 0 15px 0  $rgba-3;
+      .icon-svg{
+        color:$color-3;
+      }
+    }
+  }
+  // 颜色转换
+  .color-transform-form li {
+    input {
+      border: none;
+      border-bottom: 1px solid $color-1;
+    }
+  }
+  .color-transform-preview {
+    border: 1px solid $color-1;
+  }
+  // svg压缩
+  .svg-compress-import{
+    border: 1px dashed #cccccc;
+    &:hover{
+      border-color: $color-1;
+    }
+  }
+}

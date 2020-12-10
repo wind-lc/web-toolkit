@@ -1,10 +1,9 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
-
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
@@ -21,7 +20,7 @@ async function createWindow () {
     // transparent: true, // 透明窗口
     show: false,
     width: 800,
-    height: 500,
+    height: 600,
     iocn: 'public/favicon.ico',
     maximizable: true,
     minimizable: true,
@@ -129,4 +128,28 @@ ipcMain.on('control-window', (event, arg) => {
 // 判断窗口是否最大化
 ipcMain.on('is-maximized', (event, arg) => {
   event.reply('control-window-return', win.isMaximized())
+})
+// 文件选择
+ipcMain.on('open-file', (event, arg) => {
+  dialog.showOpenDialog(win, {
+    title: '选择svg文件',
+    buttonLabel: '确认',
+    // 限制能够选择的文件为某些类型
+    filters: [
+      { name: 'svg', extensions: ['svg'] }
+    ],
+    properties: ['openFile', 'multiSelections']
+  }).then(res => {
+    if (!res.canceled) {
+      event.reply('file-return', {
+        status: 'success',
+        data: res
+      })
+    }
+  }).catch(error => {
+    event.reply('file-return', {
+      status: 'error',
+      data: error
+    })
+  })
 })

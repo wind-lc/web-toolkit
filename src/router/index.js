@@ -26,6 +26,22 @@ const routes = [
         meta: {
           title: '颜色转换'
         }
+      },
+      {
+        path: '/jsonFormat',
+        name: 'jsonFormat',
+        component: _import('pages/jsonFormat/index'),
+        meta: {
+          title: 'JSON格式化'
+        }
+      },
+      {
+        path: '/svgCompress',
+        name: 'svgCompress',
+        component: _import('pages/svgCompress/index'),
+        meta: {
+          title: 'SVG压缩'
+        }
       }
     ]
   }

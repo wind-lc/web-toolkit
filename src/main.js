@@ -5,6 +5,8 @@ import store from './store'
 import './assets/css/reset.css'
 import './assets/css/common.scss'
 import './assets/css/night-theme.scss'
+import './assets/css/dawn-theme.scss'
+import './assets/css/dusk-theme.scss'
 import './icons'
 
 Vue.config.productionTip = false
@@ -25,7 +27,11 @@ if (window.require) {
   ipcRenderer.send('asynchronous-message', 'ping')
   // 文件
   const shell = window.require('electron').shell
+  const path = window.require('path')
+  const fs = window.require('fs')
   Vue.prototype.$shell = shell
+  Vue.prototype.$path = path
+  Vue.prototype.$fs = fs
 }
 new Vue({
   router,

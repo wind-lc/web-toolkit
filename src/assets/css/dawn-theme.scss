@@ -1,91 +1,95 @@
-.night-theme{
+// 颜色定义
+$color-1:#333333;
+$color-2:#efefef;
+$color-3:#ffffff;
+$color-4:#1890ff;
+$color-5:#007acc;
+$color-6:red;
+$color-7:#5eb2ff;
+// 透明色
+ $rgba-1: rgba(255,255,255,0.3);
+ $rgba-2: rgba(232,17,35,0.9);
+ $rgba-3:rgba(0,0,0,0.3);
+
+.dawn-theme{
   // 全局继承样式
-  color:#333333;
-  background-color: #1e1e1e;
+  color:$color-1;
+  background-color: $color-3;
   input{
-    color:#333333;
+    color:$color-1;
   }
   // a标签
   a:link,
   a:visited,
   a:hover,
   a:active{
-    color:#333333;
-  }
-  // 滚动条
-  ::-webkit-scrollbar {
-    /*滚动条整体样式*/
-    width: 6px; /*高宽分别对应横竖滚动条的尺寸*/
-    height: 10px;
-  }
-  ::-webkit-scrollbar-thumb {
-    /*滚动条里面小方块*/
-    border-radius: 10px;
-    background-color: rgba(121, 121, 121, 0.3)
-  }
-  ::-webkit-scrollbar-track {
-    /*滚动条里面轨道*/
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    color:$color-1;
   }
   // 标题栏
   .toolkit-logo{
     .icon-svg{
-      color: #ffffff;
+      color: $color-3;
+    }
+    h1{
+      color: $color-3;
     }
   }
   .toolkit-titlebar {
-    background-color: #1890ff;
+    background-color: $color-4;
+    color: $color-2;
+    box-shadow: 0 0 15px 0  $rgba-3;
   }
   .toolkit-controls >li:hover {
     &>.icon-svg{
-      color: #ffffff;
+      color: $color-3;
     }
-    background-color: rgba(255,255,255,0.1);
+    background-color: $rgba-1;
     &:last-of-type{
-      background-color: rgba(232,17,35,0.9);
+      background-color: $rgba-2;
     }
   }
   .toolkit-controls-list-active{
-    background-color: rgba(255,255,255,0.1);
+    background-color: $rgba-3;
     &>.icon-svg{
-      color: #ffffff;
+      color: $color-3;
     }
   }
   .toolkit-controls-select{
-    background-color: #252526;
-    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.5);
+    background-color: $color-4;
+    box-shadow: 0 3px 3px 0 $rgba-3;
   }
   .toolkit-controls-help-list >li:hover{
-    color: #ffffff;
-    background-color: #4e4e4e;
+    color: $color-3;
+    background-color: $color-7;
   }
   .toolkit-controls-skin-list >li{
     &:first-of-type{
       .icon-svg{
-        color: #1890ff;
+        color: $color-4;
       }
     }
     &::before{
-      border: 1px solid transparent;
+      border: 1px solid $rgba-1;
     }
     &:hover::before{
-      border: 1px solid #1890ff;
+      border: 1px solid $color-3;
     }
   }
   // 提示信息框
   .w-message-container{
-    background-color: #3c3c3c;
+    background-color: $color-4;
     padding: 14px;
-    color: red;
+    color: $color-6;
   }
   // 仪表盘导航
   .dashboard-nav li {
-    background-color: #3c3c3c;
+    background-color: $color-4;
+    color: $color-2;
     &:hover{
-      background-color: #4e4e4e;
+      background-color: $color-5;
+      box-shadow: 0 0 15px 0  $rgba-3;
       .icon-svg{
-        color:#1890ff;
+        color:$color-3;
       }
     }
   }
@@ -93,12 +97,17 @@
   .color-transform-form li {
     input {
       border: none;
-      border-bottom: 1px solid #cccccc;
+      border-bottom: 1px solid $color-1;
     }
   }
   .color-transform-preview {
-    border: 1px solid #474747;
+    border: 1px solid $color-1;
   }
-
- 
+  // svg压缩
+  .svg-compress-import{
+    border: 1px dashed #cccccc;
+    &:hover{
+      border-color: $color-1;
+    }
+  }
 }
