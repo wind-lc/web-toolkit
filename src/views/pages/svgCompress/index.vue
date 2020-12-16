@@ -1,6 +1,6 @@
 <!--
 /**
-* @description **
+* @description svg压缩
 * @author wind-lc
 * @date 2020-12-02
 */
