@@ -39,9 +39,10 @@ export default {
       // 文件选择回调
       this.$ipcRenderer.on('file-return', (event, arg) => {
         if (arg.status === 'success') {
-          Promise.all(arg.data.filePaths.map(el => this.readFile(el))).then(res => {
+          Promise.all(arg.data.filePaths.map(el => this.getFile(el))).then(res => {
             this.files = res
-            this.compressSvg()
+            console.log(res)
+            // this.compressSvg()
           }).catch(error => {
             console.log(error)
           })
@@ -50,10 +51,35 @@ export default {
         }
       })
     },
+    // 获取文件
+    async getFile (file) {
+      let obj = {}
+      await Promise.all([this.readFile(file), this.stat(file)]).then(res => {
+        obj = {
+          file: res[0],
+          stat: res[1]
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+      return obj
+    },
     // 读取文件
     readFile (url) {
       return new Promise((resolve, reject) => {
         this.$fs.readFile(url, 'utf8', function (error, data) {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(data)
+          }
+        })
+      })
+    },
+    // 获取文件状态
+    stat (url) {
+      return new Promise((resolve, reject) => {
+        this.$fs.stat(url, function (error, data) {
           if (error) {
             reject(error)
           } else {
