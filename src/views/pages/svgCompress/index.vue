@@ -42,7 +42,7 @@ export default {
           Promise.all(arg.data.filePaths.map(el => this.getFile(el))).then(res => {
             this.files = res
             console.log(res)
-            // this.compressSvg()
+            this.compressSvg()
           }).catch(error => {
             console.log(error)
           })

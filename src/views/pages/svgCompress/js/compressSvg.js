@@ -3,7 +3,6 @@
 * @author wind-lc
 * @version 1.0
 */
-
 const labelKey = {
   doctype: {
     start: '<!DOCTYPE',
@@ -43,10 +42,10 @@ const attributeKey = {
    * @param {Object} config 配置
    */
 class Compress {
-  constructor (svg, config) {
-    this.svg = svg
-    this.tempSvg = svg.replace(/[\r\n]/g, '')
-    this.length = this.tempSvg.length
+  constructor (file, config) {
+    this.svg = file.file
+    this.stat = file.stat
+    this.length = 0
     this.config = config
     this.labelKey = labelKey
     this.doubleLabelKey = doubleLabelKey
@@ -58,12 +57,17 @@ class Compress {
   convert () {
     // 去除回车
     this.svg = this.svg.replace(/[\r\n]/g, '')
+    this.length = this.svg.length
     for (const item in this.labelKey) {
       this.deleteLabel(labelKey[item])
     }
     for (const item in this.doubleLabelKey) {
       this.deleteDoubleLabel(doubleLabelKey[item])
     }
+  }
+
+  // 获取压缩率
+  getCompressibility () {
   }
 
   // 去除单标签
