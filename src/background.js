@@ -153,3 +153,18 @@ ipcMain.on('open-file', (event, arg) => {
     })
   })
 })
+// 文件保存
+ipcMain.on('save-file', (event, arg) => {
+  dialog.showSaveDialog(win, {
+    title: '保存',
+    buttonLabel: '确认',
+    // 限制能够选择的文件为某些类型
+    filters: [
+      { name: 'svg', extensions: ['svg'] }
+    ]
+  }).then(res => {
+    console.log(res)
+  }).catch(error => {
+    console.log(error)
+  })
+})

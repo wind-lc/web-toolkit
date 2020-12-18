@@ -7,10 +7,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 13px;
 }
+textarea{
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 13px;
+}
 .page{
   height: 100%;
   padding: 20px;
   position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 // 滚动条
 ::-webkit-scrollbar {
@@ -20,10 +28,10 @@ body {
 }
 ::-webkit-scrollbar-thumb {
   /*滚动条里面小方块*/
-  background-color: rgba(121, 121, 121, 0.3)
+  background-color: rgba(121, 121, 121, 0.5)
 }
 ::-webkit-scrollbar-track {
   /*滚动条里面轨道*/
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2);
 } 
 
