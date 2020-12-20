@@ -6,6 +6,10 @@ $color-4:#f5222d;
 $color-5:#c9000a;
 $color-6:#1890ff;
 $color-7:#f8656c;
+$color-8:#cccccc;
+$color-9:#e6e6e6;
+$color-10:turquoise;
+$color-11:black;
 // 透明色
  $rgba-1: rgba(255,255,255,0.3);
  $rgba-2: rgba(232,17,35,0.9);
@@ -105,9 +109,39 @@ $color-7:#f8656c;
   }
   // svg压缩
   .svg-compress-import{
-    border: 1px dashed #cccccc;
+    border: 1px dashed $color-8;
     &:hover{
       border-color: $color-1;
     }
+  }
+  .svg-compress-list {
+    border: 1px solid $color-9;
+    thead{
+      background-color: $color-9;
+    }
+    tbody tr{
+      border-bottom: 1px solid $color-9;
+    }
+  }
+  .svg-compress-preview svg{
+    fill:$color-1;
+  }
+  .svg-compress-code textarea {
+    border: 1px solid $color-9;
+    outline: none;
+    background-color: transparent;
+    color:$color-1;
+  }
+  .svg-compress-preview-operation button {
+    outline: none;
+    background: none;
+    border: none;
+    color:$color-1;
+    &:hover{
+      color: $color-11;
+    }
+  }
+  .svg-compress-compressibility span:nth-of-type(2){
+    color: $color-10;
   }
 }

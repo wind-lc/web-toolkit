@@ -84,7 +84,13 @@ $color-11:black;
   .w-message-container{
     background-color: $color-4;
     padding: 14px;
-    color: $color-6;
+    color: $color-3;
+    .w-message-container-error{
+      color: $color-6;
+    }
+    .w-message-container-success{
+      color: $color-9;
+    }
   }
   // 仪表盘导航
   .dashboard-nav li {
@@ -139,7 +145,7 @@ $color-11:black;
     border: none;
     color:$color-1;
     &:hover{
-      color:$color-3;
+      color: $color-11;
     }
   }
   .svg-compress-compressibility span:nth-of-type(2){

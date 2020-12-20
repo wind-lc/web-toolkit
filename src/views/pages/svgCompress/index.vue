@@ -15,7 +15,6 @@
         <p>点击或者拖拽文件，以及直接粘贴svg代码到此处</p>
       </div>
       <!-- 文件读取 -->
-
       <!-- 文件列表 -->
       <table class="svg-compress-list">
         <thead>
@@ -47,7 +46,7 @@
                 <button @click="download(item)">
                   <icon-svg type="icon-download"></icon-svg>
                 </button>
-                <button @click="copy(svg)">
+                <button @click="copy(item.svg)">
                   <icon-svg type="icon-copy"></icon-svg>
                 </button>
                 <button @click="deleteItem(index)">
@@ -59,24 +58,34 @@
         </tbody>
       </table>
       <!-- 文件列表 -->
+      <w-message :message="message"
+                 :visible.sync="messageVisible"></w-message>
     </div>
-
   </div>
 </template>
 <script>
 import IconSvg from '@/components/IconSvg'
 import Compress from './js/compressSvg.js'
+import wMessage from '@/components/wMessage'
 export default {
   name: 'svgCompress',
   components: {
-    IconSvg
+    IconSvg,
+    wMessage
   },
   data () {
     return {
       // 文件列表
       files: [],
       // 压缩后文件
-      afterFiles: []
+      afterFiles: [],
+      // 提示信息
+      message: {
+        type: '',
+        text: ''
+      },
+      // 提示信息可见
+      messageVisible: false
     }
   },
   created () {
@@ -94,6 +103,18 @@ export default {
           }).catch(error => {
             console.log(error)
           })
+        } else {
+          console.log(arg.data)
+        }
+      })
+      // 文件保存回调
+      this.$ipcRenderer.on('file-save-return', (event, arg) => {
+        if (arg.status === 'success') {
+          this.message = {
+            type: 'success',
+            text: arg.data
+          }
+          this.messageVisible = true
         } else {
           console.log(arg.data)
         }
@@ -152,7 +173,7 @@ export default {
     },
     // 下载
     download (file) {
-      console.log(file)
+      this.$ipcRenderer.send('save-file', file.svg)
     },
     // 复制
     copy (svg) {

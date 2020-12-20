@@ -1,7 +1,7 @@
 <!--
 /**
 * @name wMessage
-* @description **
+* @description 信息提示
 * @author wind-lc
 * @date 2020-12-06
 * @param {Object} message 信息参数
@@ -13,7 +13,12 @@
 <template>
   <div class="w-message-container"
        v-show="visible">
-    <icon-svg type="icon-close"></icon-svg>
+    <icon-svg v-if="message.type === 'error'"
+              type="icon-close"
+              :class="'w-message-container-'+message.type"></icon-svg>
+    <icon-svg v-if="message.type === 'success'"
+              type="icon-success"
+              :class="'w-message-container-'+message.type"></icon-svg>
     <span>{{message.text}}</span>
   </div>
 </template>

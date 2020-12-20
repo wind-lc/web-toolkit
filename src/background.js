@@ -3,6 +3,7 @@
 import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+const fs = require('fs')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -132,7 +133,7 @@ ipcMain.on('is-maximized', (event, arg) => {
 // 文件选择
 ipcMain.on('open-file', (event, arg) => {
   dialog.showOpenDialog(win, {
-    title: '选择svg文件',
+    title: '选择SVG文件',
     buttonLabel: '确认',
     // 限制能够选择的文件为某些类型
     filters: [
@@ -163,7 +164,26 @@ ipcMain.on('save-file', (event, arg) => {
       { name: 'svg', extensions: ['svg'] }
     ]
   }).then(res => {
-    console.log(res)
+    if (!res.canceled) {
+      // 写入文件
+      fs.writeFile(res.filePath, arg, (err) => {
+        if (err) {
+          event.reply('file-save-return', {
+            status: 'error',
+            data: err
+          })
+        } else {
+          event.reply('file-save-return', {
+            status: 'success',
+            data: '文件已保存!'
+          })
+        }
+      })
+      event.reply('file-save-return', {
+        status: 'success',
+        data: res
+      })
+    }
   }).catch(error => {
     console.log(error)
   })

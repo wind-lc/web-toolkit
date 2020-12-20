@@ -79,9 +79,14 @@ $color-9:turquoise;
   }
   // 提示信息框
   .w-message-container{
-    background-color:$color-5;
+    background-color:$color-6;
     padding: 14px;
-    color: $color-7;
+    .w-message-container-error{
+      color: $color-7;
+    }
+    .w-message-container-success{
+      color: $color-9;
+    }
   }
   // 仪表盘导航
   .dashboard-nav li {
