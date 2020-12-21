@@ -36,6 +36,14 @@ const routes = [
         }
       },
       {
+        path: '/colorStraw',
+        name: 'colorStraw',
+        component: _import('pages/colorStraw/index'),
+        meta: {
+          title: '屏幕取色器'
+        }
+      },
+      {
         path: '/svgCompress',
         name: 'svgCompress',
         component: _import('pages/svgCompress/index'),

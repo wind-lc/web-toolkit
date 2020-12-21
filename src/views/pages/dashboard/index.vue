@@ -34,15 +34,21 @@ export default {
           icon: 'icon-rgb'
         },
         {
-          title: 'JSON格式化',
-          name: 'jsonFormat',
-          icon: 'icon-json'
-        },
-        {
           title: 'SVG压缩',
           name: 'svgCompress',
           icon: 'icon-svg'
+        },
+        {
+          title: '屏幕取色器',
+          name: 'colorStraw',
+          icon: 'icon-straw'
+        },
+        {
+          title: 'JSON格式化',
+          name: 'jsonFormat',
+          icon: 'icon-json'
         }
+
       ]
     }
   },
@@ -56,14 +62,16 @@ export default {
 </script>
 <style lang="scss">
 .dashboard-container {
-  overflow-x: hidden;
-  overflow-y: auto;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .dashboard-nav {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  height: 100%;
   li {
     width: 200px;
     height: 200px;

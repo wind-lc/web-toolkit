@@ -12,7 +12,7 @@
       <div class="svg-compress-import"
            @click="openFile">
         <icon-svg type="icon-add"></icon-svg>
-        <p>点击或者拖拽文件，以及直接粘贴svg代码到此处</p>
+        <p>点击选择SVG文件</p>
       </div>
       <!-- 文件读取 -->
       <!-- 文件列表 -->
@@ -38,10 +38,10 @@
                 </span>
               </div>
               <textarea :value="item.svg"
-                        spellcheck="false"></textarea>
+                        spellcheck="false"
+                        readonly></textarea>
             </td>
             <td class="svg-compress-preview-operation">
-
               <div>
                 <button @click="download(item)">
                   <icon-svg type="icon-download"></icon-svg>
@@ -177,7 +177,13 @@ export default {
     },
     // 复制
     copy (svg) {
-      navigator.clipboard.writeText(svg).catch(error => {
+      navigator.clipboard.writeText(svg).then(res => {
+        this.message = {
+          type: 'success',
+          text: '已复制到剪贴板！'
+        }
+        this.messageVisible = true
+      }).catch(error => {
         console.log(error)
       })
     },
