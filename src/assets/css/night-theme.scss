@@ -104,6 +104,7 @@ $color-9:turquoise;
   .color-transform-form li {
     input {
       border: none;
+      background-color: transparent;
       border-bottom: 1px solid $color-1;
     }
   }
@@ -146,5 +147,18 @@ $color-9:turquoise;
   }
   .svg-compress-compressibility span:nth-of-type(2){
     color: $color-9;
+  }
+  // 屏幕取色器
+  .color-straw-control >div {
+    li{
+      input {
+        border: none;
+        background-color: transparent;
+        border-bottom: 1px solid $color-1;
+      } 
+    }
+    .color-straw-preview {
+      border: 1px solid $color-1;
+    }
   }
 }

@@ -6,18 +6,52 @@
 */
 -->
 <template>
-  <div class="page">
-    <video src=""
-           class="video"></video>
-    <canvas id="canvas"></canvas>
-    <button @click="getDesktop">btn</button>
+  <div class="page color-straw">
+    <div class="color-straw-content">
+      <!-- 取色控件 -->
+      <div class="color-straw-control">
+        <p>拖动吸管来获取颜色</p>
+        <div>
+          <ul>
+            <li>
+              <i ref="straw"
+                 @mousedown="mousedown"
+                 @mouseup="mouseup">
+                <icon-svg type="icon-straw"></icon-svg>
+              </i>
+              <input type="text">
+            </li>
+            <li>
+              <span>HEX</span>
+              <input type="text">
+            </li>
+            <li>
+              <span>RGB</span>
+              <input type="text">
+            </li>
+          </ul>
+          <div class="color-straw-preview">111</div>
+        </div>
+      </div>
+      <!-- 取色控件 -->
+      <!-- 隐藏 -->
+      <video ref="video"
+             src=""
+             class="video"></video>
+      <canvas ref="canvas"
+              class="canvas"></canvas>
+      <!-- 隐藏 -->
+    </div>
   </div>
 </template>
 <script>
+import IconSvg from '@/components/IconSvg'
 const { desktopCapturer, remote } = window.require('electron')
 export default {
   name: 'colorStraw',
-  components: {},
+  components: {
+    IconSvg
+  },
   data () {
     return {}
   },
@@ -51,11 +85,11 @@ export default {
     },
     // 视频流处理
     handleStream (stream, size) {
-      const video = document.querySelector('video')
+      const video = this.$refs.video
       video.srcObject = stream
       video.onloadedmetadata = () => {
         video.play()
-        const cas = document.getElementById('canvas')
+        const cas = this.$refs.canvas
         const ctx = cas.getContext('2d')
         cas.width = size.width
         cas.height = size.height
@@ -70,15 +104,68 @@ export default {
           stream.getTracks()[0].stop() // 关闭视频流，序号是反向的，此处只有一个所以是0
         })
       }
+    },
+    // 鼠标按下事件
+    mousedown (e) {
+      // 左键按下
+      if (e.button === 0) {
+        const straw = this.$refs.straw
+        straw.addEventListener('mousemove', this.mousemove)
+      }
+    },
+    // 鼠标弹起事件
+    mouseup (e) {
+      const straw = this.$refs.straw
+      straw.removeEventListener('mousemove', this.mousemove)
+    },
+    // 鼠标移动事件
+    mousemove (e) {
+      console.log(e.clientX, e.clientY)
     }
   }
 }
 </script>
 <style lang="scss">
+.color-straw {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.color-straw-content {
+  width: 400px;
+}
+.color-straw-control {
+  > p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    li {
+      display: flex;
+      align-items: center;
+      span {
+        letter-spacing: 2px;
+      }
+      input {
+        width: 100px;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+    }
+    .color-straw-preview {
+      width: 100px;
+      height: 100px;
+    }
+  }
+}
 .video {
   display: none;
 }
-#canvas {
+.canvas {
   display: none;
 }
 </style>

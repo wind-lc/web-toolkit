@@ -118,7 +118,7 @@ export default {
 .color-transform-form {
   height: 100px;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column;
   align-items: center;
   justify-content: space-between;
   li {
@@ -129,7 +129,6 @@ export default {
     }
     input {
       width: 100px;
-      background-color: transparent;
       letter-spacing: 1px;
       text-align: center;
     }
