@@ -10,27 +10,30 @@
     <div class="color-straw-content">
       <!-- 取色控件 -->
       <div class="color-straw-control">
-        <p>拖动吸管来获取颜色</p>
+        <p>
+          <i ref="straw"
+             @mousedown="mousedown"
+             @mouseup="mouseup">
+            <icon-svg type="icon-straw"></icon-svg>
+          </i>
+          拖动吸管来获取颜色
+        </p>
         <div>
           <ul>
             <li>
-              <i ref="straw"
-                 @mousedown="mousedown"
-                 @mouseup="mouseup">
-                <icon-svg type="icon-straw"></icon-svg>
-              </i>
+              <span>X,Y：</span>
               <input type="text">
             </li>
             <li>
-              <span>HEX</span>
+              <span>HEX：</span>
               <input type="text">
             </li>
             <li>
-              <span>RGB</span>
+              <span>RGB：</span>
               <input type="text">
             </li>
           </ul>
-          <div class="color-straw-preview">111</div>
+          <div class="color-straw-preview"></div>
         </div>
       </div>
       <!-- 取色控件 -->
@@ -46,7 +49,7 @@
 </template>
 <script>
 import IconSvg from '@/components/IconSvg'
-const { desktopCapturer, remote } = window.require('electron')
+const { remote } = window.require('electron')
 export default {
   name: 'colorStraw',
   components: {
@@ -55,62 +58,34 @@ export default {
   data () {
     return {}
   },
+  mounted () {
+    this.createWin()
+    this.ipcListener()
+  },
   methods: {
-    // 捕获屏幕
-    getDesktop () {
+    // 预创建取色窗口
+    createWin () {
       const size = remote.screen.getPrimaryDisplay().size
-      const { x, y } = remote.screen.getCursorScreenPoint()
-      console.log(x, y)
-      desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
-        await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: {
-            mandatory: {
-              chromeMediaSource: 'desktop',
-              chromeMediaSourceId: sources[0].id,
-              minWidth: size.width,
-              maxWidth: size.width,
-              minHeight: size.height,
-              maxHeight: size.height
-            }
-          }
-        }).then(res => {
-          this.handleStream(res, size)
-        }).catch(error => {
-          console.log(error)
-        })
-      }).catch(error => {
-        console.log(error)
-      })
+      this.$ipcRenderer.send('create-color-straw-win', size)
     },
-    // 视频流处理
-    handleStream (stream, size) {
-      const video = this.$refs.video
-      video.srcObject = stream
-      video.onloadedmetadata = () => {
-        video.play()
-        const cas = this.$refs.canvas
-        const ctx = cas.getContext('2d')
-        cas.width = size.width
-        cas.height = size.height
-        cas.style.width = size.width + 'px'
-        cas.style.height = size.height + 'px'
-        // ctx.drawImage(video,0, 0)
-        ctx.clearRect(0, 0, size.width, size.height)
-        createImageBitmap(video).then(bmp => { // 转为bitmap，可以提高性能，降低canvas渲染延迟
-          ctx.drawImage(bmp, 0, 0)
-          const img = ctx.getImageData(0, 0, 1, 1)
-          console.log(img.data)
-          stream.getTracks()[0].stop() // 关闭视频流，序号是反向的，此处只有一个所以是0
-        })
-      }
+    // 主进程响应监听
+    ipcListener () {
+      // 屏幕取色回调
+      this.$ipcRenderer.on('color-straw-return', (event, arg) => {
+        if (arg.status === 'success') {
+        } else {
+          console.log(arg)
+        }
+      })
     },
     // 鼠标按下事件
     mousedown (e) {
       // 左键按下
       if (e.button === 0) {
-        const straw = this.$refs.straw
-        straw.addEventListener('mousemove', this.mousemove)
+        // const straw = this.$refs.straw
+        // straw.addEventListener('mousemove', this.mousemove)
+        const size = remote.screen.getPrimaryDisplay().size
+        this.$ipcRenderer.send('color-straw', size)
       }
     },
     // 鼠标弹起事件
@@ -120,7 +95,7 @@ export default {
     },
     // 鼠标移动事件
     mousemove (e) {
-      console.log(e.clientX, e.clientY)
+      // console.log(e.clientX, e.clientY)
     }
   }
 }
@@ -132,28 +107,42 @@ export default {
   align-items: center;
 }
 .color-straw-content {
-  width: 400px;
+  width: 300px;
 }
 .color-straw-control {
   > p {
     font-size: 16px;
     margin-bottom: 20px;
     text-align: center;
+    i {
+      font-style: normal;
+      display: inline-block;
+      padding: 10px;
+      margin-right: 20px;
+    }
   }
   > div {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    li {
+    ul {
       display: flex;
-      align-items: center;
-      span {
-        letter-spacing: 2px;
-      }
-      input {
-        width: 100px;
-        letter-spacing: 1px;
-        text-align: center;
+      justify-content: space-between;
+      flex-flow: column;
+      width: 150px;
+      height: 100px;
+      li {
+        display: flex;
+        align-items: center;
+        span {
+          letter-spacing: 2px;
+          display: inline-block;
+          width: 50px;
+        }
+        input {
+          width: 100px;
+          letter-spacing: 1px;
+          text-align: center;
+        }
       }
     }
     .color-straw-preview {

@@ -88,7 +88,7 @@ export default {
       messageVisible: false
     }
   },
-  created () {
+  mounted () {
     this.ipcListener()
   },
   methods: {
@@ -112,7 +112,7 @@ export default {
         if (arg.status === 'success') {
           this.message = {
             type: 'success',
-            text: arg.data
+            text: arg.msg + '!'
           }
           this.messageVisible = true
         } else {

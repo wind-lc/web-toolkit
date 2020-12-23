@@ -175,7 +175,7 @@ export default {
   computed: {
     ...mapGetters(['getUi'])
   },
-  created () {
+  mounted () {
     this.isMaximized()
     this.ipcListener()
   },

@@ -9,14 +9,17 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
-let win = null
+// 主窗口
+let main = null
+// 屏幕取色查窗口
+let colorStrawWin = null
 // 主进程控制台输出
-function mainConsole (arg) {
-  win.webContents.send('main-console', arg)
+function mainConsole (window, arg) {
+  window.webContents.send('main-console', arg)
 }
-async function createWindow () {
+async function createMainWindow () {
   // Create the browser window.
-  win = new BrowserWindow({
+  main = new BrowserWindow({
     frame: false, // 无边框窗口
     // transparent: true, // 透明窗口
     show: false,
@@ -33,21 +36,21 @@ async function createWindow () {
     }
   })
   // 渲染完成显示窗口
-  win.once('ready-to-show', () => {
-    win.show()
+  main.once('ready-to-show', () => {
+    main.show()
   })
   // 主动向渲染器发送信息
-  win.webContents.on('did-finish-load', () => {
-    mainConsole('渲染完成！')
+  main.webContents.on('did-finish-load', () => {
+    mainConsole(main, '渲染完成！')
   })
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
-    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    // if (!process.env.IS_TEST) win.webContents.openDevTools()
+    await main.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
+    if (!process.env.IS_TEST) main.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    win.loadURL('app://./index.html')
+    main.loadURL('app://./index.html')
   }
 }
 
@@ -63,7 +66,7 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
 })
 
 // This method will be called when Electron has finished
@@ -78,7 +81,7 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
-  createWindow()
+  createMainWindow()
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -95,6 +98,7 @@ if (isDevelopment) {
     })
   }
 }
+app.commandLine.appendSwitch('wm-window-animations-disabled')
 // 和渲染器进程通信
 // 控制台输出通信
 ipcMain.on('asynchronous-message', (event, arg) => {
@@ -102,37 +106,37 @@ ipcMain.on('asynchronous-message', (event, arg) => {
 })
 // 开启开发者工具
 ipcMain.on('show-dev-tools', (event, arg) => {
-  win.webContents.openDevTools()
+  main.webContents.openDevTools()
   event.reply('show-dev-tools-console', '已经打开')
 })
 // 窗口控制
 ipcMain.on('control-window', (event, arg) => {
   switch (arg) {
     case 'minimize':
-      win.minimize()
+      main.minimize()
       break
     case 'maximize':
-      win.maximize()
+      main.maximize()
       // 判断窗口是否最大化
-      event.reply('control-window-return', win.isMaximized())
+      event.reply('control-window-return', main.isMaximized())
       break
     case 'unmaximize':
-      win.unmaximize()
+      main.unmaximize()
       // 判断窗口是否最大化
-      event.reply('control-window-return', win.isMaximized())
+      event.reply('control-window-return', main.isMaximized())
       break
     case 'close':
-      win.close()
+      main.close()
       break
   }
 })
 // 判断窗口是否最大化
 ipcMain.on('is-maximized', (event, arg) => {
-  event.reply('control-window-return', win.isMaximized())
+  event.reply('control-window-return', main.isMaximized())
 })
 // 文件选择
 ipcMain.on('open-file', (event, arg) => {
-  dialog.showOpenDialog(win, {
+  dialog.showOpenDialog(main, {
     title: '选择SVG文件',
     buttonLabel: '确认',
     // 限制能够选择的文件为某些类型
@@ -144,19 +148,21 @@ ipcMain.on('open-file', (event, arg) => {
     if (!res.canceled) {
       event.reply('file-return', {
         status: 'success',
+        msg: '文件选择成功',
         data: res
       })
     }
   }).catch(error => {
     event.reply('file-return', {
       status: 'error',
+      msg: '文件选择失败',
       data: error
     })
   })
 })
 // 文件保存
 ipcMain.on('save-file', (event, arg) => {
-  dialog.showSaveDialog(win, {
+  dialog.showSaveDialog(main, {
     title: '保存',
     buttonLabel: '确认',
     // 限制能够选择的文件为某些类型
@@ -170,21 +176,94 @@ ipcMain.on('save-file', (event, arg) => {
         if (err) {
           event.reply('file-save-return', {
             status: 'error',
+            msg: '文件保存失败',
             data: err
           })
         } else {
           event.reply('file-save-return', {
             status: 'success',
-            data: '文件已保存!'
+            msg: '文件保存成功',
+            data: null
           })
         }
       })
+    } else {
       event.reply('file-save-return', {
         status: 'success',
-        data: res
+        msg: '文件保存取消',
+        data: null
       })
     }
   }).catch(error => {
     console.log(error)
+  })
+})
+// 创建屏幕取色窗口
+async function createExtraWindow (arg, url) {
+  const win = new BrowserWindow({
+    frame: false, // 无边框窗口
+    transparent: true, // 透明窗口
+    show: false,
+    width: arg.width,
+    height: arg.height,
+    maximizable: true,
+    minimizable: true,
+    resizable: true,
+    fullscreen: true,
+    webPreferences: {
+      devTools: true,
+      nodeIntegration: true
+    }
+  })
+  // 主动向渲染器发送信息
+  win.webContents.on('did-finish-load', () => {
+    mainConsole(win, '渲染完成！')
+  })
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    // Load the url of the dev server if in development mode
+    await win.loadURL(`${process.env.WEBPACK_DEV_SERVER_URL}${url}`)
+    if (!process.env.IS_TEST) win.webContents.openDevTools()
+  } else {
+    createProtocol('app')
+    // Load the index.html when not in development
+    win.loadURL(`app://./index.html${url}`)
+  }
+  return win
+}
+// 创建屏幕取色窗口
+ipcMain.on('create-color-straw-win', (event, arg) => {
+  createExtraWindow(arg, '#/colorStrawWin').then(res => {
+    colorStrawWin = res
+  }).catch(error => {
+    console.log(error)
+  })
+  event.reply('color-straw-return', {
+    status: 'success',
+    msg: '窗口创建成功',
+    data: {
+      visible: true
+    }
+  })
+})
+// 显示屏幕取色窗口
+ipcMain.on('color-straw', (event, arg) => {
+  colorStrawWin.show()
+  event.reply('color-straw-return', {
+    status: 'success',
+    msg: '开始取色',
+    data: {
+      visible: true
+    }
+  })
+})
+// 隐藏屏幕取色窗口
+ipcMain.on('close-color-straw-win', (event, arg) => {
+  colorStrawWin.hide()
+  event.reply('color-straw-return', {
+    status: 'success',
+    msg: '窗口隐藏成功',
+    data: {
+      visible: false
+    }
   })
 })

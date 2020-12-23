@@ -149,15 +149,20 @@ $color-9:turquoise;
     color: $color-9;
   }
   // 屏幕取色器
-  .color-straw-control >div {
-    li{
-      input {
-        border: none;
-        background-color: transparent;
-        border-bottom: 1px solid $color-1;
-      } 
+  .color-straw-control{ 
+    >div {
+      li{
+        input {
+          border: none;
+          background-color: transparent;
+          border-bottom: 1px solid $color-1;
+        } 
+      }
+      .color-straw-preview {
+        border: 1px solid $color-1;
+      }
     }
-    .color-straw-preview {
+    > p i {
       border: 1px solid $color-1;
     }
   }

@@ -52,8 +52,15 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/colorStrawWin',
+    name: 'colorStrawWin',
+    component: _import('pages/colorStraw/colorStrawWin/index'),
+    meta: {
+      title: '屏幕取色器窗口'
+    }
   }
-
 ]
 
 const router = new VueRouter({
