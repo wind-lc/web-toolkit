@@ -7,36 +7,56 @@
 -->
 <template>
   <div class="color-straw-win"
-       @mousemove="getCoordinate">
-    <button @click="close">关闭</button>
+       @mousemove="getCoordinate"
+       @click="close">
+    <i class="straw"
+       :style="{left:x+'px',top:y+'px'}">
+      <icon-svg type="icon-straw"></icon-svg>
+    </i>
+    <canvas ref="canvas"
+            class="canvas"></canvas>
+    <button class="close-btn"
+            @click="close"
+            :style="{'color':rgb}">关闭 {{rgb}}</button>
   </div>
 </template>
 <script>
+// import IconSvg from '@/components/IconSvg'
 const { desktopCapturer, remote } = window.require('electron')
 export default {
   name: 'colorStrawWin',
-  components: {},
+  components: {
+    // IconSvg
+  },
   data () {
     return {
+      // 进程通信状态
+      ipcStatus: 'success',
       // canvas画布2d对象
-      ctx: null
+      ctx: null,
+      rgb: '',
+      x: 0,
+      y: 0,
+      src: null,
+      // 屏幕size
+      size: {}
     }
   },
-  mounted () {
-    this.ipcListener()
+  created () {
+    // this.ipcListener()
+    this.size = remote.screen.getPrimaryDisplay().size
+    this.getDesktop()
   },
   methods: {
     // 主进程响应监听
     ipcListener () {
-      // 屏幕取色回调
-      this.$ipcRenderer.on('color-straw-return', (event, arg) => {
-        if (arg.status === 'success') {
-          if (arg.data.visible) {
-            console.log('112')
-            this.getDesktop()
-          }
-        } else {
-          console.log(arg)
+      this.$ipcRenderer.on('screen-shot-url-return', (event, { status, msg, data }) => {
+        if (status === this.ipcStatus) {
+          // 获取到临时文件路径
+          this.url = data.url
+          this.size = remote.screen.getPrimaryDisplay().size
+          // this.getColot()
+          this.getDesktop()
         }
       })
     },
@@ -47,57 +67,44 @@ export default {
     // 获取坐标
     getCoordinate (e) {
       // console.log(this.ctx)
+
+      // this.getDesktop(e.clientX, e.clientY)
       // const img = this.ctx.getImageData(e.clientX, e.clientY, 1, 1)
-      // console.log(img.data)
+
+      if (this.ctx) {
+        const img = this.ctx.getImageData(e.clientX * 2, e.clientY * 2, 1, 1)
+        this.x = e.clientX
+        this.y = e.clientY
+        this.rgb = `rgb(${img.data[0]},${img.data[1]},${img.data[2]})`
+      }
     },
     // 捕获屏幕
-    getDesktop () {
-      const size = remote.screen.getPrimaryDisplay().size
-      const { x, y } = remote.screen.getCursorScreenPoint()
-      console.log(x, y)
-      desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
-        console.log(sources)
-        await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: {
-            mandatory: {
-              chromeMediaSource: 'desktop',
-              chromeMediaSourceId: sources[0].id,
-              minWidth: size.width,
-              maxWidth: size.width,
-              minHeight: size.height,
-              maxHeight: size.height
-            }
-          }
-        }).then(res => {
-          this.handleStream(res, size)
-        }).catch(error => {
-          console.log(error)
-        })
+    getDesktop (screenX, screenY) {
+      const { size: { width, height }, scaleFactor } = remote.screen.getPrimaryDisplay()
+      desktopCapturer.getSources({
+        types: ['screen'],
+        thumbnailSize: {
+          width: width * scaleFactor,
+          height: height * scaleFactor
+        }
+      }).then(sources => {
+        const imgSrc = sources[0].thumbnail.toDataURL()
+        const cas = this.$refs.canvas
+        this.ctx = cas.getContext('2d')
+        const ratio = devicePixelRatio
+        cas.width = this.size.width * ratio
+        cas.height = this.size.height * ratio
+        cas.style.width = 1920 + 'px'
+        cas.style.height = 1080 + 'px'
+        const image = new Image()
+        image.src = imgSrc
+        image.onload = () => {
+          this.ctx.clearRect(0, 0, this.size.width, this.size.height)
+          this.ctx.drawImage(image, 0, 0)
+        }
       }).catch(error => {
         console.log(error)
       })
-    },
-    // 视频流处理
-    handleStream (stream, size) {
-      const video = this.$refs.video
-      video.srcObject = stream
-      video.onloadedmetadata = () => {
-        video.play()
-        const cas = this.$refs.canvas
-        const ctx = cas.getContext('2d')
-        cas.width = size.width
-        cas.height = size.height
-        cas.style.width = size.width + 'px'
-        cas.style.height = size.height + 'px'
-        // ctx.drawImage(video,0, 0)
-        ctx.clearRect(0, 0, size.width, size.height)
-        createImageBitmap(video).then(bmp => { // 转为bitmap，可以提高性能，降低canvas渲染延迟
-          ctx.drawImage(bmp, 0, 0)
-          this.ctx = ctx
-          stream.getTracks()[0].stop() // 关闭视频流，序号是反向的，此处只有一个所以是0
-        })
-      }
     }
   }
 }
@@ -105,5 +112,44 @@ export default {
 <style lang="scss">
 .color-straw-win {
   height: 100%;
+  overflow: auto;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+.video {
+  display: none;
+}
+.div {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 2px solid red;
+  color: red;
+}
+.straw {
+  position: absolute;
+  color: red;
+  border: 2px solid red;
+}
+.canvas {
+  width: 100%;
+  height: 100%;
+}
+.close-btn {
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: 0;
+}
+.canvas1 {
+  width: 2px;
+  height: 2px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 1px solid red;
 }
 </style>

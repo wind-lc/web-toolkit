@@ -33,6 +33,8 @@ if (window.require) {
   Vue.prototype.$path = path
   Vue.prototype.$fs = fs
 }
+
+// 全局变量
 new Vue({
   router,
   store,

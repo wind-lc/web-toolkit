@@ -191,6 +191,10 @@ export default {
     deleteItem (index) {
       this.afterFiles.splice(index, 1)
     }
+  },
+  beforeDestroy () {
+    // 移除与主进程的通信
+    this.$ipcRenderer.removeAllListeners()
   }
 }
 </script>

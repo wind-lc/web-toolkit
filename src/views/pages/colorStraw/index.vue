@@ -12,25 +12,28 @@
       <div class="color-straw-control">
         <p>
           <i ref="straw"
-             @mousedown="mousedown"
-             @mouseup="mouseup">
+             @click="colorStraw">
             <icon-svg type="icon-straw"></icon-svg>
           </i>
-          拖动吸管来获取颜色
+          点击吸管来获取颜色
         </p>
         <div>
           <ul>
             <li>
               <span>X,Y：</span>
-              <input type="text">
+              <input type="text"
+                     readonly>
             </li>
             <li>
               <span>HEX：</span>
-              <input type="text">
+              <input type="text"
+                     readonly>
             </li>
             <li>
               <span>RGB：</span>
-              <input type="text">
+              <input type="text"
+                     v-model="rgb"
+                     readonly>
             </li>
           </ul>
           <div class="color-straw-preview"></div>
@@ -56,47 +59,53 @@ export default {
     IconSvg
   },
   data () {
-    return {}
+    return {
+      // 进程通信状态
+      ipcStatus: 'success',
+      // 屏幕size
+      size: {},
+      // 临时文件路径
+      url: '',
+      // 获取到的颜色
+      rgb: ''
+    }
   },
-  mounted () {
-    this.createWin()
+  created () {
     this.ipcListener()
+    this.createWin()
   },
   methods: {
     // 预创建取色窗口
     createWin () {
-      const size = remote.screen.getPrimaryDisplay().size
-      this.$ipcRenderer.send('create-color-straw-win', size)
+      this.size = remote.screen.getPrimaryDisplay().size
+      this.$ipcRenderer.send('create-color-straw-win', this.size)
     },
     // 主进程响应监听
     ipcListener () {
-      // 屏幕取色回调
-      this.$ipcRenderer.on('color-straw-return', (event, arg) => {
-        if (arg.status === 'success') {
-        } else {
-          console.log(arg)
+      // 窗口创建成功回调
+      this.$ipcRenderer.on('create-color-straw-win-return', (event, { status, msg, data }) => {
+        if (status === this.ipcStatus) {
+          // 获取到临时文件路径
+          this.url = data.url
+        }
+      })
+      // 取色窗口关闭回调
+      this.$ipcRenderer.on('close-color-straw-win-return', (event, { status, msg, data }) => {
+        if (status === this.ipcStatus) {
+          // 获取到临时文件路径
+          this.rgb = data.rgb
+          console.log(data.rgb)
         }
       })
     },
-    // 鼠标按下事件
-    mousedown (e) {
-      // 左键按下
-      if (e.button === 0) {
-        // const straw = this.$refs.straw
-        // straw.addEventListener('mousemove', this.mousemove)
-        const size = remote.screen.getPrimaryDisplay().size
-        this.$ipcRenderer.send('color-straw', size)
-      }
-    },
-    // 鼠标弹起事件
-    mouseup (e) {
-      const straw = this.$refs.straw
-      straw.removeEventListener('mousemove', this.mousemove)
-    },
-    // 鼠标移动事件
-    mousemove (e) {
-      // console.log(e.clientX, e.clientY)
+    // 打开取色窗口
+    colorStraw (e) {
+      this.$ipcRenderer.send('color-straw', this.size)
     }
+  },
+  beforeDestroy () {
+    // 移除与主进程的通信
+    this.$ipcRenderer.removeAllListeners()
   }
 }
 </script>
@@ -150,11 +159,5 @@ export default {
       height: 100px;
     }
   }
-}
-.video {
-  display: none;
-}
-.canvas {
-  display: none;
 }
 </style>

@@ -4,11 +4,14 @@ import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const fs = require('fs')
+const path = require('path')
+const os = require('os')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
+
 // 主窗口
 let main = null
 // 屏幕取色查窗口
@@ -32,7 +35,9 @@ async function createMainWindow () {
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: true
+      nodeIntegration: true,
+      webSecurity: false,
+      enableRemoteModule: true
     }
   })
   // 渲染完成显示窗口
@@ -82,6 +87,13 @@ app.on('ready', async () => {
     }
   }
   createMainWindow()
+})
+app.whenReady().then(() => {
+  protocol.registerFileProtocol('atom', (request, callback) => {
+    const url = request.url.substr(7)
+    // eslint-disable-next-line standard/no-callback-literal
+    callback({ path: path.normalize(`${__dirname}/${url}`) })
+  })
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -212,7 +224,9 @@ async function createExtraWindow (arg, url) {
     fullscreen: true,
     webPreferences: {
       devTools: true,
-      nodeIntegration: true
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      webSecurity: false
     }
   })
   // 主动向渲染器发送信息
@@ -228,42 +242,65 @@ async function createExtraWindow (arg, url) {
     // Load the index.html when not in development
     win.loadURL(`app://./index.html${url}`)
   }
+  // 窗口关闭销毁
+  win.on('closed', function (e) {
+    if (colorStrawWin) {
+      colorStrawWin.destroy()
+      colorStrawWin = null
+    }
+  })
   return win
 }
 // 创建屏幕取色窗口
 ipcMain.on('create-color-straw-win', (event, arg) => {
   createExtraWindow(arg, '#/colorStrawWin').then(res => {
     colorStrawWin = res
+    event.reply('create-color-straw-win-return', {
+      status: 'success',
+      msg: '窗口创建成功',
+      data: {
+        visible: true
+      }
+    })
   }).catch(error => {
     console.log(error)
-  })
-  event.reply('color-straw-return', {
-    status: 'success',
-    msg: '窗口创建成功',
-    data: {
-      visible: true
-    }
   })
 })
 // 显示屏幕取色窗口
 ipcMain.on('color-straw', (event, arg) => {
-  colorStrawWin.show()
-  event.reply('color-straw-return', {
-    status: 'success',
-    msg: '开始取色',
-    data: {
-      visible: true
-    }
-  })
+  // console.log(colorStrawWin)
+  if (colorStrawWin) {
+    colorStrawWin.show()
+    event.reply('color-straw-return', {
+      status: 'success',
+      msg: '开始取色',
+      data: {
+        visible: true
+      }
+    })
+  } else {
+    createExtraWindow(arg, '#/colorStrawWin').then(res => {
+      colorStrawWin = res
+      event.reply('color-straw-return', {
+        status: 'success',
+        msg: '开始取色',
+        data: {
+          visible: true
+        }
+      })
+    }).catch(error => {
+      console.log(error)
+    })
+  }
 })
 // 隐藏屏幕取色窗口
 ipcMain.on('close-color-straw-win', (event, arg) => {
   colorStrawWin.hide()
-  event.reply('color-straw-return', {
+  event.reply('close-color-straw-win-return', {
     status: 'success',
     msg: '窗口隐藏成功',
     data: {
-      visible: false
+      rgb: arg
     }
   })
 })
