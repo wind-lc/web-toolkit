@@ -34,16 +34,16 @@ if (window.require) {
   Vue.prototype.$path = path
   Vue.prototype.$fs = fs
 }
-Vue.prototype.$Store = new ElectronStore({
-  ui: {
-    skin:
-      'night-theme'
+Vue.prototype.$Store = new ElectronStore()
+Vue.prototype.$Store.set('ui.skin', 'night-theme')
+Vue.prototype.$Store.set('colorStraw', {
+  cursor: {
+    x: 0,
+    y: 0
   },
-  colorStraw: {
-    rgb: ''
-  }
+  hex: '',
+  rgb: ''
 })
-
 // 全局变量
 new Vue({
   router,

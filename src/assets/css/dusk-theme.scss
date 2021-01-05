@@ -145,4 +145,22 @@ $color-11:black;
   .svg-compress-compressibility span:nth-of-type(2){
     color: $color-10;
   }
+   // 屏幕取色器
+   .color-straw-control{ 
+    >div {
+      li{
+        input {
+          border: none;
+          background-color: transparent;
+          border-bottom: 1px solid $color-1;
+        } 
+      }
+      .color-straw-preview {
+        border: 1px solid $color-1;
+      }
+    }
+    > p i {
+      border: 1px solid $color-1;
+    }
+  }
 }

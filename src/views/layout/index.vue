@@ -7,7 +7,7 @@
 -->
 <template>
   <div class="toolkit-layout"
-       :class="getUi.skin">
+       :class="getUi">
     <!-- 标题栏 -->
     <div class="toolkit-titlebar">
       <!-- logo -->
@@ -77,7 +77,6 @@
 </template>
 <script>
 import IconSvg from '@/components/IconSvg'
-import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'layout',
   components: {
@@ -85,6 +84,8 @@ export default {
   },
   data () {
     return {
+      // 进程通信状态
+      ipcStatus: 'success',
       // 帮助菜单可见
       helpVisible: false,
       // 帮助菜单
@@ -173,14 +174,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUi'])
+    getUi () {
+      return this.$Store.get('ui.skin')
+    }
   },
   mounted () {
     this.isMaximized()
     this.ipcListener()
   },
   methods: {
-    ...mapActions(['saveSkin']),
     // 主进程响应监听
     ipcListener () {
       // 控制台
@@ -197,6 +199,18 @@ export default {
           this.windowControlsList[2].show = false
         }
       })
+      // 窗口最大化事件
+      this.$ipcRenderer.on('wind-maximize', (event, { status, data }) => {
+        if (status === this.ipcStatus) {
+          if (data.max) {
+            this.windowControlsList[1].show = false
+            this.windowControlsList[2].show = true
+          } else {
+            this.windowControlsList[1].show = true
+            this.windowControlsList[2].show = false
+          }
+        }
+      })
     },
     // 隐藏帮助
     handleHelpVisible () {
@@ -208,7 +222,7 @@ export default {
     },
     // 皮肤选择
     handleSkin (value) {
-      this.saveSkin(value)
+      this.$Store.set('ui.skin', value)
     },
     // 显示控制台
     showDevTools () {

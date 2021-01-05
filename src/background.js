@@ -50,12 +50,32 @@ async function createMainWindow () {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await main.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    // if (!process.env.IS_TEST) main.webContents.openDevTools()
+    if (!process.env.IS_TEST) main.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
     main.loadURL('app://./index.html')
   }
+  // 窗口最大化事件
+  main.on('maximize', function (e) {
+    main.webContents.send('wind-maximize', {
+      status: 'success',
+      msg: '窗口最大化事件',
+      data: {
+        max: true
+      }
+    })
+  })
+  // 窗口最大化事件
+  main.on('unmaximize', function (e) {
+    main.webContents.send('wind-maximize', {
+      status: 'success',
+      msg: '窗口最大化事件',
+      data: {
+        max: false
+      }
+    })
+  })
 }
 
 // Quit when all windows are closed.
@@ -295,7 +315,13 @@ ipcMain.on('color-straw', (event, arg) => {
 // 隐藏屏幕取色窗口
 ipcMain.on('close-color-straw-win', (event, arg) => {
   colorStrawWin.hide()
-  main.webContents.send('close-color-straw-win-return', arg)
+  main.webContents.send('close-color-straw-win-return', {
+    status: 'success',
+    msg: '窗口隐藏成功',
+    data: {
+      visible: false
+    }
+  })
   event.reply('close-color-straw-win-return', {
     status: 'success',
     msg: '窗口隐藏成功',
