@@ -1,6 +1,5 @@
 import { SAVE_SKIN } from '../mutation-types'
 const ui = JSON.parse(localStorage.getItem('ui'))
-
 // 初始数据
 const state = {
   ui: ui || {
@@ -23,7 +22,7 @@ const mutations = {
 const actions = {
   saveSkin (context, value) {
     context.commit(SAVE_SKIN, value)
-    localStorage.setItem('ui', JSON.stringify(state.ui))
+    localStorage.setItem('ui', JSON.stringify(value))
   }
 }
 export default { state, getters, mutations, actions }

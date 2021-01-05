@@ -5,7 +5,6 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const fs = require('fs')
 const path = require('path')
-const os = require('os')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -26,7 +25,7 @@ async function createMainWindow () {
     frame: false, // 无边框窗口
     // transparent: true, // 透明窗口
     show: false,
-    width: 800,
+    width: 720,
     height: 600,
     iocn: 'public/favicon.ico',
     maximizable: true,
@@ -51,7 +50,7 @@ async function createMainWindow () {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await main.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) main.webContents.openDevTools()
+    // if (!process.env.IS_TEST) main.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
@@ -216,6 +215,7 @@ async function createExtraWindow (arg, url) {
     frame: false, // 无边框窗口
     transparent: true, // 透明窗口
     show: false,
+    movable: false,
     width: arg.width,
     height: arg.height,
     maximizable: true,
@@ -236,7 +236,7 @@ async function createExtraWindow (arg, url) {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(`${process.env.WEBPACK_DEV_SERVER_URL}${url}`)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    // if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
@@ -268,7 +268,6 @@ ipcMain.on('create-color-straw-win', (event, arg) => {
 })
 // 显示屏幕取色窗口
 ipcMain.on('color-straw', (event, arg) => {
-  // console.log(colorStrawWin)
   if (colorStrawWin) {
     colorStrawWin.show()
     event.reply('color-straw-return', {
@@ -296,11 +295,12 @@ ipcMain.on('color-straw', (event, arg) => {
 // 隐藏屏幕取色窗口
 ipcMain.on('close-color-straw-win', (event, arg) => {
   colorStrawWin.hide()
+  main.webContents.send('close-color-straw-win-return', arg)
   event.reply('close-color-straw-win-return', {
     status: 'success',
     msg: '窗口隐藏成功',
     data: {
-      rgb: arg
+      visible: false
     }
   })
 })

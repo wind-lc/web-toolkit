@@ -62,7 +62,6 @@ module.exports = {
       .rule('svg')
       .exclude.add(resolve('src/icons'))
       .end()
-
     config.module
       .rule('icons')
       .test(/\.svg$/)
@@ -73,5 +72,10 @@ module.exports = {
       .options({
         symbolId: 'icon-[name]'
       })
+    config.module
+      .rule('image')
+      .test(/\.cur$/)
+      .use('url-loader')
+      .loader('url-loader')
   }
 }

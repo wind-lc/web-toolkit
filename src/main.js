@@ -8,6 +8,7 @@ import './assets/css/night-theme.scss'
 import './assets/css/dawn-theme.scss'
 import './assets/css/dusk-theme.scss'
 import './icons'
+const ElectronStore = window.require('electron-store')
 
 Vue.config.productionTip = false
 if (navigator.onLine) {
@@ -33,6 +34,15 @@ if (window.require) {
   Vue.prototype.$path = path
   Vue.prototype.$fs = fs
 }
+Vue.prototype.$Store = new ElectronStore({
+  ui: {
+    skin:
+      'night-theme'
+  },
+  colorStraw: {
+    rgb: ''
+  }
+})
 
 // 全局变量
 new Vue({

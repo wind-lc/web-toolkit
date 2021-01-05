@@ -12,7 +12,7 @@
       <div class="color-straw-control">
         <p>
           <i ref="straw"
-             @click="colorStraw">
+             @click="openColorStraw">
             <icon-svg type="icon-straw"></icon-svg>
           </i>
           点击吸管来获取颜色
@@ -22,37 +22,34 @@
             <li>
               <span>X,Y：</span>
               <input type="text"
+                     :value="colorStraw.cursor.x+','+colorStraw.cursor.y"
                      readonly>
             </li>
             <li>
               <span>HEX：</span>
               <input type="text"
+                     :value="colorStraw.hex"
                      readonly>
             </li>
             <li>
               <span>RGB：</span>
               <input type="text"
-                     v-model="rgb"
+                     :value="colorStraw.rgb"
                      readonly>
             </li>
           </ul>
-          <div class="color-straw-preview"></div>
+          <div class="color-straw-preview"
+               :style="{'background-color':colorStraw.hex}"></div>
         </div>
       </div>
       <!-- 取色控件 -->
-      <!-- 隐藏 -->
-      <video ref="video"
-             src=""
-             class="video"></video>
-      <canvas ref="canvas"
-              class="canvas"></canvas>
-      <!-- 隐藏 -->
     </div>
   </div>
 </template>
 <script>
 import IconSvg from '@/components/IconSvg'
 const { remote } = window.require('electron')
+
 export default {
   name: 'colorStraw',
   components: {
@@ -64,13 +61,19 @@ export default {
       ipcStatus: 'success',
       // 屏幕size
       size: {},
-      // 临时文件路径
-      url: '',
-      // 获取到的颜色
-      rgb: ''
+      // 取色数据
+      colorStraw: {
+        cursor: {
+          x: 0,
+          y: 0
+        },
+        hex: '',
+        rgb: ''
+      }
     }
   },
   created () {
+    this.colorStraw = this.$Store.get('colorStraw')
     this.ipcListener()
     this.createWin()
   },
@@ -84,22 +87,14 @@ export default {
     ipcListener () {
       // 窗口创建成功回调
       this.$ipcRenderer.on('create-color-straw-win-return', (event, { status, msg, data }) => {
-        if (status === this.ipcStatus) {
-          // 获取到临时文件路径
-          this.url = data.url
-        }
       })
       // 取色窗口关闭回调
       this.$ipcRenderer.on('close-color-straw-win-return', (event, { status, msg, data }) => {
-        if (status === this.ipcStatus) {
-          // 获取到临时文件路径
-          this.rgb = data.rgb
-          console.log(data.rgb)
-        }
+        this.colorStraw = this.$Store.get('colorStraw')
       })
     },
     // 打开取色窗口
-    colorStraw (e) {
+    openColorStraw (e) {
       this.$ipcRenderer.send('color-straw', this.size)
     }
   },
