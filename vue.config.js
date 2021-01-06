@@ -22,7 +22,7 @@ module.exports = {
       builderOptions: {
         appId: 'web-toolkit',
         productName: 'WebToolkit', // 项目名，也是生成的安装文件名，即wyDemo.exe
-        copyright: 'Copyright © 2020 wind-lc. All rights reserved', // 版权信息
+        copyright: 'Copyright (c) 2020-present, JuvenileAndSea', // 版权信息
         files: [
           './**/*'
         ],
@@ -51,7 +51,7 @@ module.exports = {
           installerHeaderIcon: './public/favicon.ico', // 安装时头部图标
           createDesktopShortcut: true, // 创建桌面图标
           createStartMenuShortcut: true, // 创建开始菜单图标
-          shortcutName: 'electron-demo' // 图标名称(项目名称)
+          shortcutName: 'WebToolkit' // 图标名称(项目名称)
         }
       }
     }
