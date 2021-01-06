@@ -1,8 +1,10 @@
 'use strict'
 
 import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
+
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+const gotTheLock = app.requestSingleInstanceLock()
 const fs = require('fs')
 const path = require('path')
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -77,7 +79,18 @@ async function createMainWindow () {
     })
   })
 }
-
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // 当运行第二个实例时,将会聚焦到mainWindow这个窗口
+    if (main) {
+      if (main.isMinimized()) main.restore()
+      main.focus()
+      main.show()
+    }
+  })
+}
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
