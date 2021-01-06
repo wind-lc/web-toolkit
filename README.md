@@ -27,7 +27,7 @@ yarn electron:build
 
 ### License
 
-MIT
+[MIT](https://opensource.org/licenses/MIT)
 
 Copyright (c) 2020-present, JuvenileAndSea
 
