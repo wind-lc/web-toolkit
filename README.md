@@ -25,4 +25,10 @@ yarn electron:serve
 yarn electron:build
 ```
 
+### License
+
+MIT
+
+Copyright (c) 2020-present, JuvenileAndSea
+
 
