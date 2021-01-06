@@ -35,7 +35,9 @@ if (window.require) {
   Vue.prototype.$fs = fs
 }
 Vue.prototype.$Store = new ElectronStore()
-Vue.prototype.$Store.set('ui.skin', 'night-theme')
+if (!Vue.prototype.$Store.get('ui.skin')) {
+  Vue.prototype.$Store.set('ui.skin', 'night-theme')
+}
 Vue.prototype.$Store.set('colorStraw', {
   cursor: {
     x: 0,

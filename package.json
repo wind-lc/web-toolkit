@@ -1,7 +1,7 @@
 {
   "name": "web-toolkit",
-  "version": "0.0.1",
-  "author": "wind-lc",
+  "version": "0.0.1-beta",
+  "author": "JuvenileAndSea",
   "description": "web工具箱",
   "private": true,
   "scripts": {

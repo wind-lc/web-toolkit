@@ -7,7 +7,7 @@
 -->
 <template>
   <div class="toolkit-layout"
-       :class="getUi">
+       :class="skinClass">
     <!-- 标题栏 -->
     <div class="toolkit-titlebar">
       <!-- logo -->
@@ -86,6 +86,8 @@ export default {
     return {
       // 进程通信状态
       ipcStatus: 'success',
+      // 皮肤类名
+      skinClass: '',
       // 帮助菜单可见
       helpVisible: false,
       // 帮助菜单
@@ -173,10 +175,8 @@ export default {
       }
     }
   },
-  computed: {
-    getUi () {
-      return this.$Store.get('ui.skin')
-    }
+  created () {
+    this.skinClass = this.$Store.get('ui.skin')
   },
   mounted () {
     this.isMaximized()
@@ -222,6 +222,7 @@ export default {
     },
     // 皮肤选择
     handleSkin (value) {
+      this.skinClass = value
       this.$Store.set('ui.skin', value)
     },
     // 显示控制台
