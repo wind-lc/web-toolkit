@@ -7,7 +7,7 @@ module.exports = {
   publicPath: '/',
   // 输出文件目录
   outputDir: '../dist',
-  // 配置js、css等文件夹的二级目录位置，不设置则会在dist下生成4个文件夹
+  // 配置静态文件目录
   assetsDir: 'static',
   // webpack-dev-server 相关配置
   devServer: {
@@ -21,12 +21,12 @@ module.exports = {
     electronBuilder: {
       builderOptions: {
         appId: 'web-toolkit',
-        productName: 'WebToolkit', // 项目名，也是生成的安装文件名，即wyDemo.exe
+        productName: 'WebToolkit', // 项目名，也是生成的安装文件名
         copyright: 'Copyright (c) 2020-present, JuvenileAndSea', // 版权信息
         files: [
           './**/*'
         ],
-        extraFiles: [ // 把指定的资源复制到程序根目录，即把server文件夹的内容复制到程序根目录，这里server文件夹下的内容相当于我的后台，我在background.js中有相应的处理。
+        extraFiles: [ // 把指定的资源复制到程序根目录
           './server'
         ],
         directories: {
@@ -72,10 +72,5 @@ module.exports = {
       .options({
         symbolId: 'icon-[name]'
       })
-    config.module
-      .rule('image')
-      .test(/\.cur$/)
-      .use('url-loader')
-      .loader('url-loader')
   }
 }
