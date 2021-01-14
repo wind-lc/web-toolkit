@@ -278,6 +278,7 @@ export default {
     height: 100px;
     width: 100%;
     line-height: 1.5em;
+    font-family: Consolas, 'Segoe UI emoji';
   }
 }
 .svg-compress-preview-operation {

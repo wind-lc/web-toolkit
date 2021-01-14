@@ -2,6 +2,7 @@ const path = require('path')
 const resolve = dir => {
   return path.join(__dirname, dir)
 }
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 module.exports = {
   // 基本路径
   publicPath: '/',
@@ -72,5 +73,19 @@ module.exports = {
       .options({
         symbolId: 'icon-[name]'
       })
+  },
+  configureWebpack: {
+    // monaco-editor按需加载
+    plugins: [
+      new MonacoWebpackPlugin({
+        languages: ['json'],
+        features: ['coreCommands', 'find'],
+        'vs/nls': {
+          availableLanguages: {
+            '*': 'zh-cn'
+          }
+        }
+      })
+    ]
   }
 }
