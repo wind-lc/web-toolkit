@@ -10,6 +10,11 @@
     <div class="json-format-content">
       <div class="json-format-edit"
            ref="edit"></div>
+      <div class="json-format-btn-wrapper">
+        <button class="json-format-btn"
+                @click="format">格式化</button>
+        <button class="json-format-btn">压缩</button>
+      </div>
     </div>
   </div>
 </template>
@@ -32,7 +37,9 @@ export default {
       ],
       jsonData: {
 
-      }
+      },
+      // 编辑器
+      editor: null
     }
   },
   mounted () {
@@ -41,18 +48,25 @@ export default {
   methods: {
     // 初始化编辑器
     init () {
-      monaco.editor.create(this.$refs.edit, {
-        value: '{"msg": "success"}',
+      this.editor = monaco.editor.create(this.$refs.edit, {
+        value: '',
         language: 'json',
         theme: 'vs-dark',
+        automaticLayout: true,
         'vs/nls': {
           availableLanguages: {
             '*': 'zh-cn'
           }
         }
       })
+    },
+    format () {
+      // console.log(this.editor.getValue())
     }
-
+  },
+  beforeDestroy () {
+    this.editor.dispose()
+    this.editor = null
   }
 }
 </script>
@@ -68,5 +82,17 @@ export default {
 }
 .json-format-edit {
   height: calc(100% - 100px);
+}
+.json-format-btn-wrapper {
+  display: flex;
+  margin-top: 10px;
+}
+.json-format-btn {
+  outline: none;
+  border: none;
+  height: 24px;
+  padding: 0 10px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 </style>

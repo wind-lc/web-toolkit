@@ -170,4 +170,12 @@ $color-9:turquoise;
   .json-format-edit{
     border: 1px solid $color-6;
   }
+  .json-format-btn {
+    background-color: $color-8;
+    color: $color-1;
+    &:hover{
+      background-color:$color-6;
+      color:$color-3;
+    }
+  }
 }
