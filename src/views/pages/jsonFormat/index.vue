@@ -13,16 +13,24 @@
       <div class="json-format-btn-wrapper">
         <button class="json-format-btn"
                 @click="format">格式化</button>
-        <button class="json-format-btn">压缩</button>
+        <button class="json-format-btn"
+                @click="compress">压缩</button>
+        <button class="json-format-btn"
+                @click="copy">复制</button>
       </div>
     </div>
+    <w-message :message="message"
+               :visible.sync="messageVisible"></w-message>
   </div>
 </template>
 <script>
 import * as monaco from 'monaco-editor'
+import wMessage from '@/components/wMessage'
 export default {
   name: 'jsonFormat',
-  components: {},
+  components: {
+    wMessage
+  },
   data () {
     return {
       // 光标位置
@@ -30,14 +38,13 @@ export default {
         x: 0,
         y: 0
       },
-      // json数据
-      text: '{"msg": "success"}',
-      edit: [
-
-      ],
-      jsonData: {
-
+      // 提示信息
+      message: {
+        type: '',
+        text: ''
       },
+      // 提示信息可见
+      messageVisible: false,
       // 编辑器
       editor: null
     }
@@ -53,15 +60,54 @@ export default {
         language: 'json',
         theme: 'vs-dark',
         automaticLayout: true,
-        'vs/nls': {
-          availableLanguages: {
-            '*': 'zh-cn'
-          }
-        }
+        tabSize: 2
       })
     },
+    // 格式化
     format () {
-      // console.log(this.editor.getValue())
+      try {
+        this.editor.setValue(JSON.stringify(JSON.parse(this.editor.getValue()), null, 2))
+      } catch (error) {
+        const err = error.toString().split(' ')
+        let index = err[err.length - 1]
+        if (isNaN(index)) {
+          index = 0
+        }
+        this.message = {
+          type: 'error',
+          text: `JSON中${index}位置处错误标记！`
+        }
+        this.messageVisible = true
+      }
+    },
+    // 压缩
+    compress () {
+      try {
+        this.editor.setValue(JSON.stringify(JSON.parse(this.editor.getValue())))
+      } catch (error) {
+        const err = error.toString().split(' ')
+        let index = err[err.length - 1]
+        if (isNaN(index)) {
+          index = 0
+        }
+        this.message = {
+          type: 'error',
+          text: `JSON中${index}位置处错误标记！`
+        }
+        this.messageVisible = true
+      }
+    },
+    // 复制
+    copy () {
+      navigator.clipboard.writeText(this.editor.getValue()).then(res => {
+        this.message = {
+          type: 'success',
+          text: '已复制到剪贴板！'
+        }
+        this.messageVisible = true
+      }).catch(error => {
+        console.log(error)
+      })
     }
   },
   beforeDestroy () {

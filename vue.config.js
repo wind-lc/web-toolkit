@@ -79,12 +79,7 @@ module.exports = {
     plugins: [
       new MonacoWebpackPlugin({
         languages: ['json'],
-        features: ['coreCommands', 'find'],
-        'vs/nls': {
-          availableLanguages: {
-            '*': 'zh-cn'
-          }
-        }
+        features: ['find']
       })
     ]
   }
