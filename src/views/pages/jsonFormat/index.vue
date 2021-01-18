@@ -124,10 +124,9 @@ export default {
 .json-format-content {
   width: 80%;
   max-width: 900px;
-  // font-family: Consolas, 'Segoe UI emoji';
 }
 .json-format-edit {
-  height: calc(100% - 100px);
+  height: calc(100% - 34px);
 }
 .json-format-btn-wrapper {
   display: flex;
