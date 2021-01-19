@@ -1,7 +1,7 @@
 # web-toolkit
 
 ### 预览
-![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/web-toolkit.png)
+![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/web-toolkit.jpg)
 
 ### 安装
 - [下载地址](https://github.com/wind-lc/web-toolkit/releases)
@@ -15,7 +15,8 @@
 ![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/2.jpg)
 - 屏幕取色 
 ![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/3.jpg)
-- JSON格式化(未完成)
+- JSON格式化
+![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/4.jpg)
 - 有三种皮肤可选择
 
 
