@@ -163,4 +163,16 @@ $color-11:black;
       border: 1px solid $color-1;
     }
   }
+   // json格式化
+   .json-format-edit{
+    border: 1px solid $color-8;
+  }
+  .json-format-btn {
+    background-color: $color-4;
+    color: $color-2;
+    &:hover{
+      background-color:$color-5;
+      color:$color-3;
+    }
+  }
 }

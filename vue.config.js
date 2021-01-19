@@ -77,10 +77,7 @@ module.exports = {
   configureWebpack: {
     // monaco-editor按需加载
     plugins: [
-      new MonacoWebpackPlugin({
-        languages: ['json'],
-        features: ['find']
-      })
+      new MonacoWebpackPlugin()
     ]
   }
 }

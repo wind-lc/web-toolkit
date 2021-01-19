@@ -1,6 +1,6 @@
-const SAVE_SKIN = 'saveSkin'
+const SAVE_UI = 'saveUi'
 const SAVE_RGB = 'saveRgb'
 export {
-  SAVE_SKIN,
+  SAVE_UI,
   SAVE_RGB
 }

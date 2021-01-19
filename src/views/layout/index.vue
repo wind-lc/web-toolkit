@@ -7,7 +7,7 @@
 -->
 <template>
   <div class="toolkit-layout"
-       :class="skinClass">
+       :class="getUi.skin">
     <!-- 标题栏 -->
     <div class="toolkit-titlebar">
       <!-- logo -->
@@ -77,6 +77,7 @@
 </template>
 <script>
 import IconSvg from '@/components/IconSvg'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'layout',
   components: {
@@ -86,8 +87,6 @@ export default {
     return {
       // 进程通信状态
       ipcStatus: 'success',
-      // 皮肤类名
-      skinClass: '',
       // 帮助菜单可见
       helpVisible: false,
       // 帮助菜单
@@ -175,14 +174,15 @@ export default {
       }
     }
   },
-  created () {
-    this.skinClass = this.$Store.get('ui.skin')
+  computed: {
+    ...mapGetters(['getUi'])
   },
   mounted () {
     this.isMaximized()
     this.ipcListener()
   },
   methods: {
+    ...mapActions(['saveUi']),
     // 主进程响应监听
     ipcListener () {
       // 控制台
@@ -222,8 +222,9 @@ export default {
     },
     // 皮肤选择
     handleSkin (value) {
-      this.skinClass = value
-      this.$Store.set('ui.skin', value)
+      this.saveUi({
+        skin: value
+      })
     },
     // 显示控制台
     showDevTools () {

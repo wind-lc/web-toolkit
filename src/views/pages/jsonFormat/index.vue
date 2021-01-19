@@ -26,6 +26,7 @@
 <script>
 import * as monaco from 'monaco-editor'
 import wMessage from '@/components/wMessage'
+import { mapGetters } from 'vuex'
 export default {
   name: 'jsonFormat',
   components: {
@@ -47,6 +48,17 @@ export default {
       messageVisible: false,
       // 编辑器
       editor: null
+
+    }
+  },
+  computed: {
+    ...mapGetters(['getUi'])
+  },
+  watch: {
+    getUi: {
+      handler (newV, oldV) {
+        monaco.editor.setTheme(newV.skin === 'night-theme' ? 'vs-dark' : 'vs')
+      }
     }
   },
   mounted () {
@@ -58,7 +70,7 @@ export default {
       this.editor = monaco.editor.create(this.$refs.edit, {
         value: '',
         language: 'json',
-        theme: 'vs-dark',
+        theme: this.getUi.skin === 'night-theme' ? 'vs-dark' : 'vs',
         automaticLayout: true,
         tabSize: 2
       })

@@ -1,6 +1,5 @@
 import { SAVE_RGB } from '../mutation-types'
 const rgb = JSON.parse(localStorage.getItem('colorStraw'))
-
 // 初始数据
 const state = {
   rgb: rgb || ''
