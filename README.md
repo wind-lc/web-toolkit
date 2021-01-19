@@ -10,12 +10,16 @@
 
 ### 使用
 - RGB和十六进制的互相转换
+
 ![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/1.jpg)
 - SVG文件压缩，可以到[iconfont](https://www.iconfont.cn/)下载图标svg
+
 ![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/2.jpg)
 - 屏幕取色 
+
 ![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/3.jpg)
 - JSON格式化
+
 ![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/4.jpg)
 - 有三种皮肤可选择
 
