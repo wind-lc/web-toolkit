@@ -19,13 +19,9 @@ if (window.require) {
   // 通信
   const ipcRenderer = window.require('electron').ipcRenderer
   Vue.prototype.$ipcRenderer = ipcRenderer
-  ipcRenderer.on('asynchronous-reply', (event, arg) => {
-    console.log(arg) // prints "pong"
-  })
   ipcRenderer.on('main-console', (event, arg) => {
     console.log('%c' + arg, 'color: #24a9f4;font-size: 20px;font-weight: bold;')
   })
-  ipcRenderer.send('asynchronous-message', 'ping')
   // 文件
   const shell = window.require('electron').shell
   const path = window.require('path')

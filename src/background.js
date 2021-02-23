@@ -148,10 +148,6 @@ if (isDevelopment) {
 }
 app.commandLine.appendSwitch('wm-window-animations-disabled')
 // 和渲染器进程通信
-// 控制台输出通信
-ipcMain.on('asynchronous-message', (event, arg) => {
-  event.reply('asynchronous-reply', '你好')
-})
 // 开启开发者工具
 ipcMain.on('show-dev-tools', (event, arg) => {
   main.webContents.openDevTools()
