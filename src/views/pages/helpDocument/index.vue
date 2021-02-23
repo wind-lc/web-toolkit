@@ -8,20 +8,21 @@
 <template>
   <div class="help-document page">
     <div class="help-document-content">
-      <h4>1.RGB和16进制互换</h4>
+      <h4>1.点击左上角LOGO即可返回首页</h4>
+      <h4>2.RGB和16进制互换</h4>
       <ul>
         <li>● 点击箭头可以实现RGB颜色和16进制互相转换</li>
         <li>● RGB：RGB颜色</li>
         <li>● HEX：16进制颜色</li>
         <li>● 右侧方框颜色预览</li>
       </ul>
-      <h4>2.SVG压缩</h4>
+      <h4>3.SVG压缩</h4>
       <ul>
         <li>● 点击选择SVG文件选择好SVG文件，自动压缩</li>
         <li>● 压缩完成后可以预览SVG，以及显示压缩比例</li>
         <li>● 下载、复制以及删除当前SVG</li>
       </ul>
-      <h4>3.屏幕取色器</h4>
+      <h4>4.屏幕取色器</h4>
       <ul>
         <li>● 点击吸管即可开始取色，此时鼠标会变成吸管</li>
         <li>● 移动鼠标到想要取色的地方点击即可完成取色</li>
@@ -30,7 +31,7 @@
         <li>● RGB：RGB颜色</li>
         <li>● 右侧方框颜色预览</li>
       </ul>
-      <h4>4.JSON格式化</h4>
+      <h4>5.JSON格式化</h4>
       <ul>
         <li>● 输入或者粘贴JSON代码到文本域</li>
         <li>● 点击格式化按钮即可格式化JSON</li>
