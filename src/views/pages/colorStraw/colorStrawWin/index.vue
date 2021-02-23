@@ -54,7 +54,7 @@ export default {
     ...mapActions(['saveRgb']),
     // 关闭
     close () {
-      this.$Store.set('colorStraw', this.colorStraw)
+      this.$eStore.set('colorStraw', this.colorStraw)
       this.$ipcRenderer.send('close-color-straw-win', true)
     },
     // 获取坐标

@@ -8,7 +8,8 @@ import './assets/css/night-theme.scss'
 import './assets/css/dawn-theme.scss'
 import './assets/css/dusk-theme.scss'
 import './icons'
-
+const ElectronStore = window.require('electron-store')
+const eStore = new ElectronStore()
 Vue.config.productionTip = false
 if (navigator.onLine) {
   console.log('%c ', "padding:112px 150px;background:url('https://images.cnblogs.com/cnblogs_com/enumx/1647344/o_200214113324console.gif') no-repeat;")
@@ -32,6 +33,7 @@ if (window.require) {
   Vue.prototype.$shell = shell
   Vue.prototype.$path = path
   Vue.prototype.$fs = fs
+  Vue.prototype.$eStore = eStore
 }
 // 全局变量
 new Vue({

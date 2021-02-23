@@ -73,7 +73,7 @@ export default {
     }
   },
   created () {
-    this.colorStraw = this.$Store.get('colorStraw')
+    this.colorStraw = this.$eStore.get('colorStraw')
     this.ipcListener()
     this.createWin()
   },
@@ -90,7 +90,7 @@ export default {
       })
       // 取色窗口关闭回调
       this.$ipcRenderer.on('close-color-straw-win-return', (event, { status, msg, data }) => {
-        this.colorStraw = this.$Store.get('colorStraw')
+        this.colorStraw = this.$eStore.get('colorStraw')
       })
     },
     // 打开取色窗口
