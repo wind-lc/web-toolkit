@@ -99,7 +99,7 @@ export default {
         {
           name: '帮助文档',
           value: 'document',
-          click: null
+          click: 'showDocument'
         }
       ],
       // 皮肤菜单可见
@@ -229,6 +229,10 @@ export default {
     // 显示控制台
     showDevTools () {
       this.$ipcRenderer.send('show-dev-tools', true)
+    },
+    // 显示帮助文档
+    showDocument () {
+      this.$router.push({ name: 'helpDocument' })
     },
     // 菜单按钮点击事件
     menubarClick (fun) {

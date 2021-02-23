@@ -12,6 +12,14 @@ const routes = [
     redirect: '/dashboard',
     children: [
       {
+        path: '/helpDocument',
+        name: 'helpDocument',
+        component: _import('pages/helpDocument/index'),
+        meta: {
+          title: '帮助文档'
+        }
+      },
+      {
         path: '/dashboard',
         name: 'dashboard',
         component: _import('pages/dashboard/index'),
