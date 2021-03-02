@@ -253,7 +253,7 @@ async function createExtraWindow (arg, url) {
     height: arg.height,
     maximizable: true,
     minimizable: true,
-    resizable: true,
+    resizable: false,
     fullscreen: true,
     webPreferences: {
       devTools: true,
@@ -324,6 +324,13 @@ ipcMain.on('color-straw', (event, arg) => {
       console.log(error)
     })
   }
+  colorStrawWin.webContents.send('color-straw-src', {
+    status: 'success',
+    msg: '截图数据',
+    data: {
+      src: arg
+    }
+  })
 })
 // 隐藏屏幕取色窗口
 ipcMain.on('close-color-straw-win', (event, arg) => {

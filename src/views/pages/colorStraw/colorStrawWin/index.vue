@@ -10,13 +10,14 @@
        @mousemove="getCoordinate"
        @click="close">
     <canvas ref="canvas"
-            class="canvas"></canvas>
+            class="canvas"
+            v-show="show"></canvas>
   </div>
 </template>
 <script>
 // import IconSvg from '@/components/IconSvg'
 import { mapActions } from 'vuex'
-const { desktopCapturer, remote } = window.require('electron')
+const { remote } = window.require('electron')
 export default {
   name: 'colorStrawWin',
   components: {
@@ -43,17 +44,29 @@ export default {
         rgb: ''
       },
       // 屏幕size
-      size: {}
+      size: {},
+      show: false
     }
   },
   created () {
+    this.ipcListener()
+  },
+  mounted () {
     this.size = remote.screen.getPrimaryDisplay().size
-    this.getDesktop()
   },
   methods: {
     ...mapActions(['saveRgb']),
+    // 主进程响应监听
+    ipcListener () {
+      // 窗口创建成功回调
+      this.$ipcRenderer.on('color-straw-src', (event, { status, msg, data }) => {
+        this.getDesktop(data.src)
+      })
+    },
     // 关闭
     close () {
+      this.show = false
+      this.ctx.clearRect(0, 0, this.size.width * this.ratio, this.size.height * this.ratio)
       this.$eStore.set('colorStraw', this.colorStraw)
       this.$ipcRenderer.send('close-color-straw-win', true)
     },
@@ -82,31 +95,19 @@ export default {
       }
     },
     // 捕获屏幕
-    getDesktop (screenX, screenY) {
-      const { size: { width, height }, scaleFactor } = remote.screen.getPrimaryDisplay()
-      desktopCapturer.getSources({
-        types: ['screen'],
-        thumbnailSize: {
-          width: width * scaleFactor,
-          height: height * scaleFactor
-        }
-      }).then(sources => {
-        const imgSrc = sources[0].thumbnail.toDataURL()
-        const cas = this.$refs.canvas
-        this.ctx = cas.getContext('2d')
-        cas.width = this.size.width * this.ratio
-        cas.height = this.size.height * this.ratio
-        cas.style.width = 1920 + 'px'
-        cas.style.height = 1080 + 'px'
-        const image = new Image()
-        image.src = imgSrc
-        image.onload = () => {
-          this.ctx.clearRect(0, 0, this.size.width, this.size.height)
-          this.ctx.drawImage(image, 0, 0)
-        }
-      }).catch(error => {
-        console.log(error)
-      })
+    getDesktop (src) {
+      const cas = this.$refs.canvas
+      this.ctx = cas.getContext('2d')
+      cas.width = this.size.width * this.ratio
+      cas.height = this.size.height * this.ratio
+      cas.style.width = 1920 + 'px'
+      cas.style.height = 1080 + 'px'
+      const image = new Image()
+      image.src = src
+      image.onload = () => {
+        this.show = true
+        this.ctx.drawImage(image, 0, 0)
+      }
     }
   }
 }

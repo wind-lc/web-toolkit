@@ -48,8 +48,7 @@
 </template>
 <script>
 import IconSvg from '@/components/IconSvg'
-const { remote } = window.require('electron')
-
+const { desktopCapturer, remote } = window.require('electron')
 export default {
   name: 'colorStraw',
   components: {
@@ -95,7 +94,20 @@ export default {
     },
     // 打开取色窗口
     openColorStraw (e) {
-      this.$ipcRenderer.send('color-straw', this.size)
+      const { size: { width, height }, scaleFactor } = remote.screen.getPrimaryDisplay()
+      desktopCapturer.getSources({
+        types: ['screen'],
+        thumbnailSize: {
+          width: width * scaleFactor,
+          height: height * scaleFactor
+        }
+      }).then(sources => {
+        const imgSrc = sources[0].thumbnail.toDataURL()
+        this.src = imgSrc
+        this.$ipcRenderer.send('color-straw', imgSrc)
+      }).catch(error => {
+        console.log(error)
+      })
     }
   },
   beforeDestroy () {
