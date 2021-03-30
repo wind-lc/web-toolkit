@@ -4,7 +4,7 @@
 * @description 自定义icon图标
 *              新增svg步骤:
 *              1.下载svg文件(本项目从 https://www.iconfont.cn 图标库获取svg)
-*              2.压缩svg文件(可以使用在线压缩工具 https://www.zhangxinxu.com/sp/svgo/ 完成压缩并获取到压缩之后的svg,另外可以自行使用 https://github.com/svg/svgo 压缩svg)
+*              2.压缩svg文件(可以使用本工具完成压缩并获取到压缩之后的svg)
 *              3.修改svg名称为iconfont图标的代码名(其他途径获取svg自行命名)
 *              4.组件中引入使用即可
 * @author wind-lc
