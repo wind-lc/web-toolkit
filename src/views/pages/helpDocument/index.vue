@@ -16,7 +16,7 @@
         <li>● HEX：16进制颜色</li>
         <li>● 右侧方框颜色预览</li>
       </ul>
-      <h4>3.SVG文件压缩，可以到[iconfont](https://www.iconfont.cn/)下载图标svg</h4>
+      <h4>3.SVG文件压缩，可以到(https://www.iconfont.cn/)下载图标svg</h4>
       <ul>
         <li>● 点击选择SVG文件选择好SVG文件，自动压缩</li>
         <li>● 压缩完成后可以预览SVG，以及显示压缩比例</li>
