@@ -18,14 +18,14 @@
 - HEX：16进制颜色
 - 右侧方框颜色预览
 
-![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/1.jpg)
+![RGB和16进制互换](https://github.com/wind-lc/images/blob/main/web-toolkit/1.jpg)
 ##### 2.SVG文件压缩，可以到[iconfont](https://www.iconfont.cn/)下载图标svg
 
 - 点击选择SVG文件选择好SVG文件，自动压缩
 - 压缩完成后可以预览SVG，以及显示压缩比例
 - 下载、复制以及删除当前SVG
 
-![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/2.jpg)
+![SVG文件压缩](https://github.com/wind-lc/images/blob/main/web-toolkit/2.jpg)
 ##### 3.屏幕取色器 
 
 - 点击吸管即可开始取色，此时鼠标会变成吸管
@@ -35,7 +35,7 @@
 - RGB：RGB颜色
 - 右侧方框颜色预览
 
-![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/3.jpg)
+![屏幕取色器](https://github.com/wind-lc/images/blob/main/web-toolkit/3.jpg)
 ##### 4.JSON格式化
 
 - 输入或者粘贴JSON代码到文本域
@@ -43,8 +43,12 @@
 - 点击压缩即可压缩JSON
 - 点击复制即可复制JSON代码到剪贴板
 
-![预览](https://github.com/wind-lc/images/blob/main/web-toolkit/4.jpg)
+![JSON格式化](https://github.com/wind-lc/images/blob/main/web-toolkit/4.jpg)
 ##### 5.支持换肤有三种皮肤可选择
+
+![night](https://github.com/wind-lc/images/blob/main/web-toolkit/web-toolkit.jpg)
+![dusk](https://github.com/wind-lc/images/blob/main/web-toolkit/web-toolkit2.jpg)
+![dawn](https://github.com/wind-lc/images/blob/main/web-toolkit/web-toolkit3.jpg)
 
 ### 🤝问题
 
